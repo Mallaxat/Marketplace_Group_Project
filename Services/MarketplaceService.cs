@@ -88,6 +88,51 @@ namespace Marketplace_Group_Project.Services
 
 		#region Методы характеристик
 
+		public void AddCharacteristic(int productId, ProductCharacteristic characteristic)
+		{
+			var product = context.Products.Include(p=>p.Characteristics)
+				.First(p=> p.Id == productId);
+			if (product != null)
+			{
+				product.Characteristics.Add(characteristic);
+				context.SaveChanges();
+			}
+		}
+
+		public void AddCharacteristic(ProductCharacteristic characteristic)
+		{
+			var product = context.Products.Include(p => p.Characteristics)
+				.First(p => p.Id == characteristic.ProductId);
+			if (product != null)
+			{
+				context.ProductCharacteristics.Add(characteristic);
+				context.SaveChanges();
+			}
+		}
+
+		public void UpdateCharacteristic(ProductCharacteristic characteristic)
+		{
+			context.ProductCharacteristics.Update(characteristic);
+			context.SaveChanges();
+		}
+
+		public void DeleteCharachteristic(int characteristicId)
+		{
+			var characteristic = context.ProductCharacteristics.Find(characteristicId);
+			if (characteristic != null)
+			{
+				context.ProductCharacteristics.Remove(characteristic);
+				context.SaveChanges();
+			}
+		}
+
+		public IEnumerable<ProductCharacteristic> GetProductCharacteristics(int productId)
+		{
+			var product = context.Products.Include(p => p.Characteristics)
+				.First(p => p.Id == productId);
+
+			return product.Characteristics;
+		}
 
 		#endregion
 
