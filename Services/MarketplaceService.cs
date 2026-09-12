@@ -212,6 +212,57 @@ namespace Marketplace_Group_Project.Services
 
 		#region Методы заказов
 
+		public void CreateOrder(Order order)
+		{
+			foreach (var item in order.OrderItems)
+			{
+				if (!CheckStock(item.ProductId, item.Quantity))
+				{
+					throw new ArgumentOutOfRangeException("Не удалось оформить заказ.\nТовара нет в наличии.");
+				}
+			}
+
+			context.Orders.Add(order);
+			context.SaveChanges();
+		}
+
+		public IEnumerable<Order> GetUserOrders(int userId)
+		{
+			try
+			{
+				return context.Orders.Where(o => o.UserId == userId).ToList();
+			}
+			catch
+			{
+				return Enumerable.Empty<Order>();
+			}
+		}
+
+		public IEnumerable<OrderItem> GetOrderItems(int orderId)
+		{
+			try
+			{
+				return context.OrderItems.Where(o => o.OrderId == orderId).ToList();
+			}
+			catch
+			{
+				return Enumerable.Empty<OrderItem>();
+			}
+		}
+
+		public bool CheckStock(int productId, int currentQuantity)
+		{
+			var product = context.Products.First(p => p.Id == productId);
+
+			return product.StockQuantity >= currentQuantity;
+		}
+
+		public void ChangeOrderStatus(Order order, StatusEnum status)
+		{
+			context.Orders.Attach(order);
+			order.Status = status;
+			context.SaveChanges();
+		}
 
 		#endregion
 

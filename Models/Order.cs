@@ -21,7 +21,7 @@ namespace Marketplace_Group_Project.Models
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 		[Required]
-		public StatusEnum Status { get; set; }
+		public StatusEnum Status { get; set; } = StatusEnum.Created;
 
 		public decimal TotalPrice { get; set; }
 
