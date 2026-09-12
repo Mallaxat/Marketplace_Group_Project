@@ -129,16 +129,83 @@ namespace Marketplace_Group_Project.Services
 
 		public IEnumerable<ProductCharacteristic> GetProductCharacteristics(int productId)
 		{
-			var product = context.Products.Include(p => p.Characteristics)
-				.First(p => p.Id == productId);
-
-			return product.Characteristics;
+			try
+			{
+				return context.ProductCharacteristics
+					.Where(ch => ch.ProductId == productId).ToList();
+			}
+			catch
+			{
+				return Enumerable.Empty<ProductCharacteristic>();
+			}
 		}
 
 		#endregion
 
 		#region Методы корзины
 
+		public IEnumerable<CartItem> GetCartItems(int userId)
+		{
+			try
+			{
+				return context.CartItems.Where(c => c.UserId == userId).ToList(); 
+			}
+			catch
+			{
+				return Enumerable.Empty<CartItem>();
+			}
+		}
+
+		public void AddToCart(CartItem cartItem)
+		{
+			//на случай если такой товар уже был в корзине
+			// - если не пондобиться удалить
+			//var founded = context.CartItems.FirstOrDefault(f => f.ProductId == cartItem.ProductId 
+			//&& f.UserId == cartItem.UserId);
+			
+			//if(founded != null)
+			//{
+			//	founded.Quantity += cartItem.Quantity;
+			//}
+
+			context.CartItems.Add(cartItem);
+			context.SaveChanges();
+		}
+
+		public void ChangeCartItemQauntity(int cartItemId, int newQuantity)
+		{
+			var cartItem = context.CartItems.Include(c=>c.Product).First(c=> c.Id == cartItemId);
+			if (cartItem.Product!.StockQuantity >= newQuantity)
+			{
+				cartItem.Quantity = newQuantity;
+				context.SaveChanges();
+			}
+			else
+				throw new ArgumentException("Товар отсутствует в таком количестве.");
+		}
+
+		public void RemoveFromCart(int cartItemId)
+		{
+			var cartItem = context.CartItems.First(c => c.Id == cartItemId);
+			context.CartItems.Remove(cartItem);
+			context.SaveChanges();
+		}
+
+		public void ClearCart(int userId)
+		{
+			var cartItems = context.CartItems.Where(c=> c.UserId == userId).ToList();
+			context.CartItems.RemoveRange(cartItems);
+			context.SaveChanges();
+		}
+
+		public decimal GetCartTotal(int userId)
+		{
+			var cartItems = context.CartItems.Include(c=>c.Product)
+				.Where(c => c.UserId == userId).ToList();
+
+			decimal total = cartItems.Sum(c => (c.Product!.Price * c.Quantity));
+			return total;
+		}
 
 		#endregion
 

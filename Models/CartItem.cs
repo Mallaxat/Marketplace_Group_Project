@@ -8,7 +8,7 @@ namespace Marketplace_Group_Project.Models
 	/// <summary>
 	/// Хранит один товар в корзине пользователя
 	/// </summary>
-	public class CardItem
+	public class CartItem
 	{
 		[Key]
 		public int Id { get; set; }

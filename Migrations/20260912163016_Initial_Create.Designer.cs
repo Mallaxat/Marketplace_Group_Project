@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace_Group_Project.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20260912131631_Initial_Create")]
+    [Migration("20260912163016_Initial_Create")]
     partial class Initial_Create
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Marketplace_Group_Project.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Marketplace_Group_Project.Models.CardItem", b =>
+            modelBuilder.Entity("Marketplace_Group_Project.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,7 +48,7 @@ namespace Marketplace_Group_Project.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CardItems");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Marketplace_Group_Project.Models.Order", b =>
@@ -241,7 +241,7 @@ namespace Marketplace_Group_Project.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Marketplace_Group_Project.Models.CardItem", b =>
+            modelBuilder.Entity("Marketplace_Group_Project.Models.CartItem", b =>
                 {
                     b.HasOne("Marketplace_Group_Project.Models.Product", "Product")
                         .WithMany()

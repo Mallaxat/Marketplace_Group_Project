@@ -72,7 +72,7 @@ namespace Marketplace_Group_Project.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardItems",
+                name: "CartItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -83,15 +83,15 @@ namespace Marketplace_Group_Project.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CardItems", x => x.Id);
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CardItems_Products_ProductId",
+                        name: "FK_CartItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CardItems_Users_UserId",
+                        name: "FK_CartItems_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -178,13 +178,13 @@ namespace Marketplace_Group_Project.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardItems_ProductId",
-                table: "CardItems",
+                name: "IX_CartItems_ProductId",
+                table: "CartItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CardItems_UserId",
-                table: "CardItems",
+                name: "IX_CartItems_UserId",
+                table: "CartItems",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -222,7 +222,7 @@ namespace Marketplace_Group_Project.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CardItems");
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");

@@ -14,7 +14,7 @@ namespace Marketplace_Group_Project.Models
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ProductCharacteristic> ProductCharacteristics { get; set; }
 		public DbSet<Review> Reviews { get; set; }
-		public DbSet<CardItem> CardItems { get; set; }
+		public DbSet<CartItem> CartItems { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderItem> OrderItems { get; set; }
 
