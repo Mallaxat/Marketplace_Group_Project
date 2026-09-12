@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -149,7 +150,39 @@ namespace Marketplace_Group_Project.Services
 
 
 		#region Методы отзывов
+		public IEnumerable<Review> GetProductReviews(int productId)
+		{
+			var product = context.Products.Include(p => p.Reviews)
+				.First(p => p.Id == productId);
 
+			return product.Reviews;
+		}
+
+		public void AddReview(int productId, int userId, Review review)
+		{
+			review.UserId = userId;
+			review.ProductId = productId;
+
+			context.Reviews.Add(review);
+			context.SaveChanges();
+		}
+		
+		public void AddReview(Review review)
+		{
+			context.Reviews.Add(review);
+			context.SaveChanges();
+		}
+
+		public bool CanUserReview()
+		{
+			throw new NotImplementedException(); //todo
+		}
+
+		public double GetAverageRating(int productId)
+		{
+			var reviews = GetProductReviews(productId);
+			return reviews.Average(r => r.Rating);
+		}
 
 		#endregion
 
