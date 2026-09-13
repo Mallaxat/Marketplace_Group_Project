@@ -23,12 +23,6 @@ namespace Marketplace_Group_Project
 				await context.Database.MigrateAsync(); // Применяет миграции и запускает сидер
 			}
 
-			var products = new MarketplaceService().SearchProducts("БЕ");
-			foreach (var product in products)
-			{
-				Console.WriteLine($"{product.Name} - {product.Price}");
-			}
-
 		}
 	}
 
