@@ -60,8 +60,7 @@ namespace Marketplace_Group_Project.Services
 
 		public IEnumerable<Product> SearchProducts(string request)
 		{
-			return context.Products.Where(p => 
-					p.Name.Contains(request, StringComparison.OrdinalIgnoreCase)).ToList();
+			return context.Products.Where(p => EF.Functions.Like(p.Name, $"%{request}%")).ToList();
 		}
 
 		public void AddProduct(Product product)

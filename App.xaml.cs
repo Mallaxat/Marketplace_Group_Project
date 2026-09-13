@@ -1,4 +1,5 @@
 ﻿using Marketplace_Group_Project.Models;
+using Marketplace_Group_Project.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System.Data;
@@ -20,6 +21,12 @@ namespace Marketplace_Group_Project
 			using (var context = new MarketplaceDbContext())
 			{
 				await context.Database.MigrateAsync(); // Применяет миграции и запускает сидер
+			}
+
+			var products = new MarketplaceService().SearchProducts("БЕ");
+			foreach (var product in products)
+			{
+				Console.WriteLine($"{product.Name} - {product.Price}");
 			}
 
 		}
