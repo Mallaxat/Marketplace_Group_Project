@@ -58,9 +58,10 @@ namespace Marketplace_Group_Project.Services
 			}
 		}
 
-		public IEnumerable<Product> SearchProducts()
+		public IEnumerable<Product> SearchProducts(string request)
 		{
-			throw new NotImplementedException(); //todo
+			return context.Products.Where(p => 
+					p.Name.Contains(request, StringComparison.OrdinalIgnoreCase)).ToList();
 		}
 
 		public void AddProduct(Product product)
@@ -291,9 +292,22 @@ namespace Marketplace_Group_Project.Services
 			context.SaveChanges();
 		}
 
-		public bool CanUserReview()
+		public bool CanUserReview(int userId, int productId)
 		{
-			throw new NotImplementedException(); //todo
+			var userOrders = context.Orders.Include(o => o.OrderItems)
+				.Where(o => o.UserId == userId && o.Status == StatusEnum.Received).ToList();
+
+			foreach (var order in userOrders)
+			{
+				foreach(var item in order.OrderItems)
+				{
+					if(item.ProductId == productId)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		public double GetAverageRating(int productId)

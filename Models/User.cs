@@ -28,6 +28,9 @@ namespace Marketplace_Group_Project.Models
 		public RoleEnum Role { get; set; }
 
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+		public List<Order> Orders { get; set; }
+
 	}
 
 	public enum RoleEnum

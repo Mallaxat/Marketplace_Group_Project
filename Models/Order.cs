@@ -39,6 +39,8 @@ namespace Marketplace_Group_Project.Models
 		Done,
 		[Description("Перенесён")]
 		Postponed,
+		[Description("Получен")]
+		Received,
 		[Description("Отменён")]
 		Canceled
 	}
