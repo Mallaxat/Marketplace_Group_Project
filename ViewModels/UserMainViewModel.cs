@@ -7,10 +7,10 @@ using System.Windows.Input;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    /// <summary>
+    
     /// ViewModel главного окна покупателя.
     /// Отвечает за отображение товаров, корзины и заказов пользователя.
-    /// </summary>
+    
     public class UserMainViewModel : ViewModelBase
     {
         private readonly MarketplaceService _marketplaceService;

@@ -6,10 +6,10 @@ using System.Windows;
 
 namespace Marketplace_Group_Project.Services
 {
-    /// <summary>
+    
     /// Отвечает за переходы между окнами приложения
     /// и хранит текущего авторизованного пользователя.
-    /// </summary>
+    
     public class AppNavigationService
     {
         private readonly MarketplaceService _marketplaceService;
@@ -21,9 +21,9 @@ namespace Marketplace_Group_Project.Services
             _marketplaceService = marketplaceService;
         }
 
-        /// <summary>
+       
         /// Открывает главное окно покупателя.
-        /// </summary>
+        
         public void NavigateToUserMain(User user)
         {
             CurrentUser = user;
@@ -37,9 +37,9 @@ namespace Marketplace_Group_Project.Services
             OpenWindow(window);
         }
 
-        /// <summary>
+        
         /// Открывает главное окно администратора.
-        /// </summary>
+        
         public void NavigateToAdminMain(User user)
         {
             CurrentUser = user;
@@ -53,9 +53,9 @@ namespace Marketplace_Group_Project.Services
             OpenWindow(window);
         }
 
-        /// <summary>
+        
         /// Возвращает пользователя на окно входа.
-        /// </summary>
+        
         public void Logout()
         {
             CurrentUser = null;
@@ -64,9 +64,9 @@ namespace Marketplace_Group_Project.Services
             OpenWindow(loginWindow);
         }
 
-        /// <summary>
+       
         /// Закрывает все открытые окна, кроме нового, и показывает новое.
-        /// </summary>
+        
         private static void OpenWindow(Window newWindow)
         {
             var oldWindows = Application.Current.Windows

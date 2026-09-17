@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    /// <summary>
+    
     /// Базовый класс для всех ViewModel.
     /// Реализует INotifyPropertyChanged, чтобы WPF обновлял интерфейс
     /// при изменении значений свойств.
-    /// </summary>
+    
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;

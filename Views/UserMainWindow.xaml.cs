@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace Marketplace_Group_Project.Views
 {
-    /// <summary>
+    
     /// Логика взаимодействия для UserMainWindow.xaml
-    /// </summary>
+    
     public partial class UserMainWindow : Window
     {
         public UserMainWindow()
