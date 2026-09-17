@@ -36,6 +36,14 @@ namespace Marketplace_Group_Project.Models
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
+
+			modelBuilder.Entity<User>()
+				.HasIndex(u => u.Login)
+				.IsUnique();
+
+			modelBuilder.Entity<User>()
+				.HasIndex(u => u.Email)
+				.IsUnique();
 		}
 	}
 }

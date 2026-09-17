@@ -148,7 +148,7 @@ namespace Marketplace_Group_Project.Services
 		{
 			try
 			{
-				return context.CartItems.Where(c => c.UserId == userId).ToList(); 
+				return context.CartItems.Include(c => c.Product).Where(c => c.UserId == userId).ToList(); 
 			}
 			catch
 			{
@@ -158,15 +158,9 @@ namespace Marketplace_Group_Project.Services
 
 		public void AddToCart(CartItem cartItem)
 		{
-			//на случай если такой товар уже был в корзине
-			// - если не пондобиться удалить
-			//var founded = context.CartItems.FirstOrDefault(f => f.ProductId == cartItem.ProductId 
-			//&& f.UserId == cartItem.UserId);
-			
-			//if(founded != null)
-			//{
-			//	founded.Quantity += cartItem.Quantity;
-			//}
+			Product productToAdd = context.Products.First(p => p.Id == cartItem.ProductId);
+			if (productToAdd.StockQuantity == 0 | productToAdd.StockQuantity < cartItem.Quantity)
+				throw new ArgumentException("Товар отсутствует в таком количестве.");
 
 			context.CartItems.Add(cartItem);
 			context.SaveChanges();
@@ -214,13 +208,18 @@ namespace Marketplace_Group_Project.Services
 
 		public void CreateOrder(Order order)
 		{
+			var products = context.Products
+				.Where(p => order.OrderItems.Select(i => i.ProductId).Contains(p.Id))
+				.ToDictionary(p => p.Id);
+
+			var outOfStock = order.OrderItems
+				.FirstOrDefault(i => products[i.ProductId].StockQuantity < i.Quantity);
+
+			if (outOfStock != null)
+				throw new ArgumentOutOfRangeException("Не удалось оформить заказ. Некторых товаров нет в наличии.");
+
 			foreach (var item in order.OrderItems)
-			{
-				if (!CheckStock(item.ProductId, item.Quantity))
-				{
-					throw new ArgumentOutOfRangeException("Не удалось оформить заказ.\nТовара нет в наличии.");
-				}
-			}
+				products[item.ProductId].StockQuantity -= item.Quantity;
 
 			context.Orders.Add(order);
 			context.SaveChanges();
