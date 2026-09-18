@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Network\" />
+    <Folder Include="Views\" />
   </ItemGroup>
 
   <ItemGroup>
