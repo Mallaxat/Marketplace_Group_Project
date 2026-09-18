@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Network\**" />
-    <EmbeddedResource Remove="Network\**" />
-    <None Remove="Network\**" />
-    <Page Remove="Network\**" />
+    <Compile Remove="Network\" />
+    <EmbeddedResource Remove="Network\" />
+    <None Remove="Network\" />
+    <Page Remove="Network\" />
   </ItemGroup>
 
   <ItemGroup>
