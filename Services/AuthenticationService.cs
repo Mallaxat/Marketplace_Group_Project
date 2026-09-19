@@ -101,9 +101,7 @@ namespace Marketplace_Group_Project.Services
             if (!VerifyPassword(user.PasswordHash, password))
                 return null;
 
-            // После авторизации проверяется роль пользователя
-            // Role доступна через user.Role (RoleEnum.Admin или RoleEnum.User)
-
+            // После авторизации проверяется роль пользователя (RoleEnum.Admin или RoleEnum.User)
             return user;
         }
 

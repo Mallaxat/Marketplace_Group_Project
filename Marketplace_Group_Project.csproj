@@ -9,26 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Network\**" />
-    <EmbeddedResource Remove="Network\**" />
-    <None Remove="Network\**" />
-    <Page Remove="Network\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Network\" />
-    <Folder Include="Views\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.18.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MimeKit" Version="4.18.0" />
   </ItemGroup>
 
 </Project>
