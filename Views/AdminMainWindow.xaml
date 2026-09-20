@@ -6,7 +6,9 @@
         mc:Ignorable="d"
         Title="Магазин — Администратор"
         Height="700" Width="1100"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+		Background="#F4F6F9"
+        FontFamily="Segoe UI">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
