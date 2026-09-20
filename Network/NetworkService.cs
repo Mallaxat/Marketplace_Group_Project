@@ -50,7 +50,7 @@ namespace Marketplace_Group_Project.Network
         public async Task SendMessageAsync(string toEmail, string subject, string body)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("", _emailFrom));
+            message.From.Add(new MailboxAddress("Marketplace", _emailFrom));
             message.To.Add(new MailboxAddress("", toEmail));
             message.Subject = subject;
             message.Body = new TextPart("plain") { Text = body };
@@ -63,6 +63,5 @@ namespace Marketplace_Group_Project.Network
             await _client.SendAsync(message);
         }
 
-        // ReceiveMessage() и StartListening() Для получения POP3/IMAP (отдельные клиенты)
     }
 }

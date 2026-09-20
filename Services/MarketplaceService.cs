@@ -206,6 +206,18 @@ namespace Marketplace_Group_Project.Services
 
 		#region Методы заказов
 
+		public IEnumerable<Order> GetAllOrders()
+		{
+			try
+			{
+				return context.Orders.Include(o=> o.User).ToList();
+			}
+			catch
+			{
+				return Enumerable.Empty<Order>();
+			}
+		}
+
 		public void CreateOrder(Order order)
 		{
 			var products = context.Products

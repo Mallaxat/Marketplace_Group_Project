@@ -121,7 +121,7 @@ namespace Marketplace_Group_Project.ViewModels
             switch (user.Role)
             {
                 case RoleEnum.Admin:
-                    _appNaviService.NavigateToUserMain(user);
+                    _appNaviService.NavigateToAdminMain(user);
                     _appNaviService.Logout();
                     break;
 

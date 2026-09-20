@@ -4,10 +4,13 @@
 	<SolidColorBrush x:Key="AccentBrush" Color="#4F7CFF"/>
 	<SolidColorBrush x:Key="AccentHoverBrush" Color="#3D68E0"/>
 	<SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
+	<SolidColorBrush x:Key="SuccessBrush" Color="#2FA96B"/>
+	<SolidColorBrush x:Key="SuccessHoverBrush" Color="#268A57"/>
 	<SolidColorBrush x:Key="BorderSoftBrush" Color="#E3E8EF"/>
 	<SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2937"/>
 	<SolidColorBrush x:Key="TextMutedBrush" Color="#333333"/>
 	<SolidColorBrush x:Key="DangerBrush" Color="#E5484D"/>
+	<SolidColorBrush x:Key="DangerHoverBrush" Color="#C93B40"/>
 
 	<Style x:Key="BaseButton" TargetType="Button">
 		<Setter Property="Foreground" Value="White"/>
@@ -39,13 +42,101 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	
+	<Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+		<Setter Property="Background" Value="{StaticResource DangerBrush}"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+						<ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bd" Property="Background" Value="{StaticResource DangerHoverBrush}"/>
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter TargetName="Bd" Property="Background" Value="#E7B6B7"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{StaticResource BorderSoftBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+						<ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bd" Property="Background" Value="#EEF2FA"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="SuccessButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+		<Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+						<ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Bd" Property="Background" Value="{StaticResource SuccessHoverBrush}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="MiniButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+		<Setter Property="Padding" Value="8,2"/>
+		<Setter Property="FontSize" Value="13"/>
+		<Setter Property="MinWidth" Value="30"/>
+	</Style>
+	
+	<Style x:Key="MiniDangerButton" TargetType="Button" BasedOn="{StaticResource MiniButton}">
+		<Setter Property="Background" Value="{StaticResource DangerBrush}"/>
+	</Style>
 
 	<!-- Поля — простые, прямоугольные -->
 	<Style TargetType="TextBox">
-		<Setter Property="Height" Value="32"/>
 		<Setter Property="Padding" Value="8,0"/>
 		<Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}"/>
 		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background" Value="White"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+	</Style>
+
+	<Style TargetType="ComboBox">
+		<Setter Property="Padding" Value="6,4"/>
+		<Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}"/>
 		<Setter Property="Background" Value="White"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 	</Style>
@@ -77,7 +168,82 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style TargetType="DataGrid">
+		<Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="RowBackground" Value="White"/>
+		<Setter Property="AlternatingRowBackground" Value="#F8FAFD"/>
+		<Setter Property="GridLinesVisibility" Value="Horizontal"/>
+		<Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderSoftBrush}"/>
+		<Setter Property="HeadersVisibility" Value="Column"/>
+		<Setter Property="RowHeight" Value="34"/>
+		<Setter Property="CanUserAddRows" Value="False"/>
+		<Setter Property="CanUserResizeRows" Value="False"/>
+		<Setter Property="SelectionUnit" Value="FullRow"/>
+	</Style>
 
+	<Style TargetType="DataGridColumnHeader">
+		<Setter Property="Background" Value="#EEF2FA"/>
+		<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Padding" Value="10,8"/>
+		<Setter Property="BorderBrush" Value="{StaticResource BorderSoftBrush}"/>
+		<Setter Property="BorderThickness" Value="0,0,0,1"/>
+		<Setter Property="HorizontalContentAlignment" Value="Left"/>
+	</Style>
 
+	<Style TargetType="DataGridCell">
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="10,6"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+		<Style.Triggers>
+			<Trigger Property="IsSelected" Value="True">
+				<Setter Property="Background" Value="#DCE6FF"/>
+				<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style TargetType="TabControl">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<Style TargetType="TabItem">
+		<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="FontSize" Value="13"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TabItem">
+					<Border x:Name="Bd"
+                                Background="Transparent"
+                                CornerRadius="8"
+                                Margin="0,0,6,0"
+                                Padding="16,8">
+						<ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsSelected" Value="True">
+							<Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentBrush}"/>
+							<Setter Property="Foreground" Value="White"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="True"/>
+								<Condition Property="IsSelected" Value="False"/>
+							</MultiTrigger.Conditions>
+							<Setter TargetName="Bd" Property="Background" Value="#E7EEFF"/>
+							<Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 </ResourceDictionary>

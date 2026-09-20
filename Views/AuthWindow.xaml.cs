@@ -32,11 +32,11 @@ namespace Marketplace_Group_Project.Views
             var naviService = new AppNavigationService(marketplaceService);
             var networkService = new NetworkService(
                 smtpHost: "smtp.mail.ru",
-                smtpPort: 587,
+                smtpPort: 465,
                 useSsl: true,
-                emailFrom: "email@mail.ru",
-                password: "app-password"
-                );
+                emailFrom: "sttrebery@mail.ru",
+                password: "GbBEEpJAt5NjKKUBokbg"
+				);
 
             _viewModel = new AuthViewModel(authService, naviService, networkService);
             DataContext = _viewModel;
