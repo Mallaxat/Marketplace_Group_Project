@@ -9,19 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Network\**" />
-    <EmbeddedResource Remove="Network\**" />
-    <None Remove="Network\**" />
-    <Page Remove="Network\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Migrations\" />
-<<<<<<<<< Temporary merge branch 1
-=========
-    <Folder Include="Network\" />
     <Folder Include="Views\" />
->>>>>>>>> Temporary merge branch 2
+
   </ItemGroup>
 
   <ItemGroup>
