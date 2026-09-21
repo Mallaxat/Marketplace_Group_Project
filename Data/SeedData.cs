@@ -17,27 +17,27 @@ namespace Marketplace_Group_Project.Data
 			var context = (MarketplaceDbContext)ctx;
 
 			//user-ы на будущее, когда с методом шифрования определимся
-			//if(!context.Users.Any())
-			//{
-			//	await context.Users.AddRangeAsync(
-			//		new User
-			//		{
-			//			Login = "admin",
-			//			Email = "test_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.Admin,
-			//		},
-			//		new User
-			//		{
-			//			Login = "guest",
-			//			Email = "guest_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.User,
-			//		}
-			//	);
-			//}
+			if (!context.Users.Any())
+			{
+				context.Users.AddRangeAsync(
+					new User
+					{
+						Login = "admin",
+						Email = "test_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("adm1"),
+						Role = RoleEnum.Admin,
+					},
+					new User
+					{
+						Login = "guest",
+						Email = "guest_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("123$"),
+						Role = RoleEnum.User,
+					}
+				);
+			}
 
-			//await context.SaveChangesAsync();
+			context.SaveChangesAsync();
 
 			if (!context.Products.Any())
 			{
@@ -168,26 +168,26 @@ namespace Marketplace_Group_Project.Data
 		{
 			var context = (MarketplaceDbContext)ctx;
 
-			//user - ы на будущее, когда с методом шифрования определимся
-			if (!context.Users.Any())
-			{
-				await context.Users.AddRangeAsync(
-					new User
-					{
-						Login = "admin",
-						Email = "test_email@.com",
-						PasswordHash = AuthenticationService.HashPassword("adm1"),
-						Role = RoleEnum.Admin,
-					},
-					new User
-					{
-						Login = "guest",
-						Email = "guest_email@.com",
-						PasswordHash = AuthenticationService.HashPassword("1234"),
-						Role = RoleEnum.User,
-					}
-				);
-			}
+			//user-ы на будущее, когда с методом шифрования определимся
+			//if(!context.Users.Any())
+			//{
+			//	await context.Users.AddRangeAsync(
+			//		new User
+			//		{
+			//			Login = "admin",
+			//			Email = "test_email@.com",
+			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
+			//			Role = RoleEnum.Admin,
+			//		},
+			//		new User
+			//		{
+			//			Login = "guest",
+			//			Email = "guest_email@.com",
+			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
+			//			Role = RoleEnum.User,
+			//		}
+			//	);
+			//}
 
 			await context.SaveChangesAsync();
 

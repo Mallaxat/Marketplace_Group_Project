@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,17 +8,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Marketplace_Group_Project
+namespace Marketplace_Group_Project.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    
+    /// Логика взаимодействия для UserMainWindow.xaml
+    
+    public partial class UserMainWindow : Window
     {
-        public MainWindow()
+        public UserMainWindow()
         {
             InitializeComponent();
         }
