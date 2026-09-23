@@ -8,31 +8,30 @@ using System.Windows.Input;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    
+    /// <summary>
+    /// ViewModel панели продавца.
+    /// Продавец видит и редактирует только свои товары.
+    /// </summary>
     public class AdminMainViewModel : ViewModelBase
     {
         private readonly MarketplaceService _marketplaceService;
         private readonly AppNavigationService _navigationService;
         private readonly User _currentUser;
 
-        // ---- Товары ----
         private Product? _selectedProduct;
         private Product? _editingProduct;
 
-        // ---- Форма нового товара ----
         private string _newProductName = string.Empty;
         private string _newProductDescription = string.Empty;
         private decimal _newProductPrice;
         private int _newProductStockQuantity;
         private CategoryEnum _newProductCategory;
 
-        // ---- Характеристики ----
         private ProductCharacteristic? _selectedCharacteristic;
         private string _newCharacteristicName = string.Empty;
         private string _newCharacteristicValue = string.Empty;
         private UnitEnum _newCharacteristicUnit = UnitEnum.None;
 
-        // ---- Заказы ----
         private Order? _selectedOrder;
         private StatusEnum _selectedStatus;
 
@@ -61,22 +60,44 @@ namespace Marketplace_Group_Project.ViewModels
                 Units.Add(unit);
 
             RefreshProductsCommand = new RelayCommand(_ => LoadProducts());
-            DeactivateProductCommand = new RelayCommand(_ => DeactivateProduct(), _ => SelectedProduct != null);
-            AddProductCommand = new RelayCommand(_ => AddProduct(), _ => CanAddProduct());
-            StartEditProductCommand = new RelayCommand(_ => StartEditProduct(), _ => SelectedProduct != null);
-            SaveProductCommand = new RelayCommand(_ => SaveProduct(), _ => EditingProduct != null);
+
+            DeactivateProductCommand = new RelayCommand(
+                _ => DeactivateProduct(),
+                _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
+
+            AddProductCommand = new RelayCommand(
+                _ => AddProduct(),
+                _ => CanAddProduct());
+
+            StartEditProductCommand = new RelayCommand(
+                _ => StartEditProduct(),
+                _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
+
+            SaveProductCommand = new RelayCommand(
+                _ => SaveProduct(),
+                _ => EditingProduct != null);
+
             CancelEditCommand = new RelayCommand(_ => CancelEdit());
-            AddCharacteristicCommand = new RelayCommand(_ => AddCharacteristic(), _ => CanAddCharacteristic());
-            DeleteCharacteristicCommand = new RelayCommand(_ => DeleteCharacteristic(), _ => SelectedCharacteristic != null);
+
+            AddCharacteristicCommand = new RelayCommand(
+                _ => AddCharacteristic(),
+                _ => CanAddCharacteristic());
+
+            DeleteCharacteristicCommand = new RelayCommand(
+                _ => DeleteCharacteristic(),
+                _ => SelectedCharacteristic != null);
+
             RefreshOrdersCommand = new RelayCommand(_ => LoadOrders());
-            ChangeOrderStatusCommand = new RelayCommand(_ => ChangeOrderStatus(), _ => SelectedOrder != null);
+
+            ChangeOrderStatusCommand = new RelayCommand(
+                _ => ChangeOrderStatus(),
+                _ => SelectedOrder != null);
+
             LogoutCommand = new RelayCommand(_ => Logout());
 
             LoadProducts();
             LoadOrders();
         }
-
-        // ==================== Коллекции ====================
 
         public ObservableCollection<Product> Products { get; }
         public ObservableCollection<Order> Orders { get; }
@@ -86,8 +107,6 @@ namespace Marketplace_Group_Project.ViewModels
         public ObservableCollection<ProductCharacteristic> Characteristics { get; }
 
         public string CurrentUserName => _currentUser.Login;
-
-        // ==================== Товары ====================
 
         public Product? SelectedProduct
         {
@@ -138,8 +157,6 @@ namespace Marketplace_Group_Project.ViewModels
             set => SetProperty(ref _newProductCategory, value);
         }
 
-        // ==================== Характеристики ====================
-
         public ProductCharacteristic? SelectedCharacteristic
         {
             get => _selectedCharacteristic;
@@ -164,8 +181,6 @@ namespace Marketplace_Group_Project.ViewModels
             set => SetProperty(ref _newCharacteristicUnit, value);
         }
 
-        // ==================== Заказы ====================
-
         public Order? SelectedOrder
         {
             get => _selectedOrder;
@@ -177,8 +192,6 @@ namespace Marketplace_Group_Project.ViewModels
             get => _selectedStatus;
             set => SetProperty(ref _selectedStatus, value);
         }
-
-        // ==================== Команды ====================
 
         public ICommand RefreshProductsCommand { get; }
         public ICommand DeactivateProductCommand { get; }
@@ -192,12 +205,10 @@ namespace Marketplace_Group_Project.ViewModels
         public ICommand ChangeOrderStatusCommand { get; }
         public ICommand LogoutCommand { get; }
 
-        // ==================== Логика: товары ====================
-
         private void LoadProducts()
         {
             Products.Clear();
-            var products = _marketplaceService.GetProducts();
+            var products = _marketplaceService.GetProductsBySellerId(_currentUser.Id);
             foreach (var product in products)
                 Products.Add(product);
         }
@@ -219,7 +230,8 @@ namespace Marketplace_Group_Project.ViewModels
                 StockQuantity = NewProductStockQuantity,
                 Category = NewProductCategory,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                SellerId = _currentUser.Id
             };
 
             try
@@ -227,7 +239,6 @@ namespace Marketplace_Group_Project.ViewModels
                 _marketplaceService.AddProduct(product);
                 LoadProducts();
 
-                // Очистить форму
                 NewProductName = string.Empty;
                 NewProductDescription = string.Empty;
                 NewProductPrice = 0;
@@ -245,6 +256,9 @@ namespace Marketplace_Group_Project.ViewModels
             if (SelectedProduct == null)
                 return;
 
+            if (SelectedProduct.SellerId != _currentUser.Id)
+                return;
+
             EditingProduct = new Product
             {
                 Id = SelectedProduct.Id,
@@ -255,13 +269,17 @@ namespace Marketplace_Group_Project.ViewModels
                 Category = SelectedProduct.Category,
                 IsActive = SelectedProduct.IsActive,
                 CreatedAt = SelectedProduct.CreatedAt,
-                ImagePath = SelectedProduct.ImagePath
+                ImagePath = SelectedProduct.ImagePath,
+                SellerId = SelectedProduct.SellerId
             };
         }
 
         private void SaveProduct()
         {
             if (EditingProduct == null)
+                return;
+
+            if (EditingProduct.SellerId != _currentUser.Id)
                 return;
 
             try
@@ -287,11 +305,12 @@ namespace Marketplace_Group_Project.ViewModels
             if (SelectedProduct == null)
                 return;
 
+            if (SelectedProduct.SellerId != _currentUser.Id)
+                return;
+
             _marketplaceService.DeactivateProduct(SelectedProduct.Id);
             LoadProducts();
         }
-
-        // ==================== Логика: характеристики ====================
 
         private void LoadCharacteristics()
         {
@@ -307,6 +326,7 @@ namespace Marketplace_Group_Project.ViewModels
         private bool CanAddCharacteristic()
         {
             return SelectedProduct != null
+                && SelectedProduct.SellerId == _currentUser.Id
                 && !string.IsNullOrWhiteSpace(NewCharacteristicName)
                 && !string.IsNullOrWhiteSpace(NewCharacteristicValue);
         }
@@ -314,6 +334,9 @@ namespace Marketplace_Group_Project.ViewModels
         private void AddCharacteristic()
         {
             if (SelectedProduct == null)
+                return;
+
+            if (SelectedProduct.SellerId != _currentUser.Id)
                 return;
 
             var characteristic = new ProductCharacteristic
@@ -345,16 +368,16 @@ namespace Marketplace_Group_Project.ViewModels
             if (SelectedCharacteristic == null)
                 return;
 
+            if (SelectedProduct == null || SelectedProduct.SellerId != _currentUser.Id)
+                return;
+
             _marketplaceService.DeleteCharachteristic(SelectedCharacteristic.Id);
             LoadCharacteristics();
         }
 
-        // ==================== Логика: заказы ====================
-
         private void LoadOrders()
         {
             Orders.Clear();
-
             var orders = _marketplaceService.GetAllOrders();
             foreach (var order in orders)
                 Orders.Add(order);
@@ -368,8 +391,6 @@ namespace Marketplace_Group_Project.ViewModels
             _marketplaceService.ChangeOrderStatus(SelectedOrder, SelectedStatus);
             LoadOrders();
         }
-
-        // ==================== Выход ====================
 
         private void Logout()
         {
