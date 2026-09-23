@@ -9,13 +9,17 @@
         WindowStartupLocation="CenterScreen">
 
     <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="31*"/>
+            <ColumnDefinition Width="14*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Верхняя панель -->
-        <DockPanel Grid.Row="0" Margin="0,0,0,10">
+        <DockPanel Grid.Row="0" Margin="0,0,0,10" Grid.ColumnSpan="2">
             <Button DockPanel.Dock="Right"
                     Content="Выйти"
                     Width="100" Height="30"
@@ -26,7 +30,7 @@
         </DockPanel>
 
         <!-- Вкладки -->
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1" Grid.ColumnSpan="2">
 
             <!-- ТОВАРЫ -->
             <TabItem Header="Товары">
