@@ -49,6 +49,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 89_999M,
 						StockQuantity = 37,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -75,6 +76,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 10_999M,
 						StockQuantity = 50,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -107,6 +109,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 7_649M,
 						StockQuantity = 40,
 						Category = CategoryEnum.Sport,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -132,6 +135,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 540M,
 						StockQuantity = 137,
 						Category = CategoryEnum.OfficeSupplies,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -179,7 +183,7 @@ namespace Marketplace_Group_Project.Data
 					{
 						Login = "guest",
 						Email = "guest_email@.com",
-						PasswordHash = AuthenticationService.HashPassword("123$"),
+						PasswordHash = AuthenticationService.HashPassword("1234"),
 						Role = RoleEnum.User,
 					}
 				);
@@ -197,6 +201,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 89_999M,
 						StockQuantity = 37,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -223,6 +228,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 10_999M,
 						StockQuantity = 50,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -255,6 +261,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 7_649M,
 						StockQuantity = 40,
 						Category = CategoryEnum.Sport,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -280,6 +287,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 540M,
 						StockQuantity = 137,
 						Category = CategoryEnum.OfficeSupplies,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{

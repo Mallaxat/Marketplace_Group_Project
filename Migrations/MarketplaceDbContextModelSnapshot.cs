@@ -135,10 +135,15 @@ namespace Marketplace_Group_Project.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("SellerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Products");
                 });
@@ -293,6 +298,17 @@ namespace Marketplace_Group_Project.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Marketplace_Group_Project.Models.Product", b =>
+                {
+                    b.HasOne("Marketplace_Group_Project.Models.User", "Seller")
+                        .WithMany("Products")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
             modelBuilder.Entity("Marketplace_Group_Project.Models.ProductCharacteristic", b =>
                 {
                     b.HasOne("Marketplace_Group_Project.Models.Product", "Product")
@@ -338,6 +354,8 @@ namespace Marketplace_Group_Project.Migrations
             modelBuilder.Entity("Marketplace_Group_Project.Models.User", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
