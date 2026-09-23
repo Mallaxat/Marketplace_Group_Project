@@ -32,6 +32,7 @@ namespace Marketplace_Group_Project.Models
 
 		public List<Order> Orders { get; set; }
 
+		public List<Product> Products { get; set; }
 	}
 
 	public enum RoleEnum

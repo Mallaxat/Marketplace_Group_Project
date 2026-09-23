@@ -85,6 +85,19 @@ namespace Marketplace_Group_Project.Services
 			}
 		}
 
+		public IEnumerable<Product> GetProductsBySellerId(int sellerId)
+		{
+			try
+			{
+				return context.Products.Include(p=>p.Characteristics)
+					.Where(p=> p.SellerId == sellerId).ToList();
+			}
+			catch
+			{
+				return Enumerable.Empty<Product>();
+			}
+		}
+
 		#endregion
 
 		#region Методы характеристик

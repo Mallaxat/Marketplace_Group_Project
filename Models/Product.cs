@@ -36,6 +36,11 @@ namespace Marketplace_Group_Project.Models
 
 		public List<ProductCharacteristic> Characteristics { get; set; }
 		public List<Review> Reviews { get; set; }
+
+		[Required]
+		public int SellerId { get; set; }
+		[ForeignKey("SellerId")]
+		public User? Seller { get; set; }
 	}
 
 	public enum CategoryEnum
