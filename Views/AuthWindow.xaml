@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:Marketplace_Group_Project.Converters"
-        xmlns:models="clr-namespace:Marketplace_Group_Project.Models"
         mc:Ignorable="d"
         Title="Авторизация / Регистрация"
         Height="700" Width="450"
@@ -73,9 +72,9 @@
 
                 <!-- Выбор роли (только при регистрации) -->
                 <WrapPanel Grid.Row="1" Margin="0,5,0,15" Orientation="Horizontal" Visibility="{Binding IsRegistrationMode, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="Вы:" Style="{StaticResource FieldLabel}" Margin="45,0,15,0" VerticalAlignment="Center"/>
-                    <RadioButton Content="Покупатель" IsChecked="{Binding SelectedRole, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static models:RoleEnum.User}, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,15,0"/>
-                    <RadioButton Content="Продавец" IsChecked="{Binding SelectedRole, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static models:RoleEnum.Admin}, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    <TextBlock Text="Вы:" Style="{StaticResource FieldLabel}" Margin="20,0,10,0" VerticalAlignment="Center" FontSize="16"/>
+                    <RadioButton Content="Покупатель" IsChecked="{Binding IsCustomerRole, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="16"/>
+                    <RadioButton Content="Продавец" IsChecked="{Binding IsSellerRole, Mode=TwoWay}" VerticalAlignment="Center" FontSize="16"/>
                 </WrapPanel>
 
                 <!-- Login -->

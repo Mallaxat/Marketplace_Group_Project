@@ -14,13 +14,36 @@ namespace Marketplace_Group_Project.ViewModels
         private readonly AuthenticationService _authService;
         private readonly AppNavigationService _appNaviService;
         private readonly NetworkService _networkService;
+        
         private RoleEnum _selectedRole = RoleEnum.User;
 
-        public RoleEnum SelectedRole
+        public bool IsCustomerRole
         {
-            get => _selectedRole;
-            set => SetProperty(ref _selectedRole, value);
+            get => _selectedRole == RoleEnum.User;
+            set
+            {
+                if (value)
+                {
+                    _selectedRole = RoleEnum.User;
+                    OnPropertyChanged();
+                }
+            }
         }
+
+        public bool IsSellerRole
+        {
+            get => _selectedRole == RoleEnum.Admin;
+            set
+            {
+                if (value)
+                {
+                    _selectedRole = RoleEnum.Admin;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public RoleEnum SelectedRole => _selectedRole;
 
         private string _login = string.Empty;
         public string Login
@@ -85,7 +108,6 @@ namespace Marketplace_Group_Project.ViewModels
             set => SetProperty(ref _isBusy, value);
         }
 
-
         // Скрытое: сгенерированный код
         private string _generatedCode = string.Empty;
 
@@ -107,6 +129,9 @@ namespace Marketplace_Group_Project.ViewModels
             RegisterCommand = new RelayCommand(async _ => await RegisterAsync());
             SwitchModeCommand = new RelayCommand(_ => SwitchMode());
             ConfirmCodeCommand = new RelayCommand(async _ => await ConfirmCodeAsync());
+            
+            _selectedRole = RoleEnum.User;
+            OnPropertyChanged(nameof(SelectedRole));
         }
 
         private async Task LoginAsync()
@@ -272,6 +297,13 @@ namespace Marketplace_Group_Project.ViewModels
             IsRegistrationMode = !IsRegistrationMode;
             IsConfirmationMode = false;
             ErrorMessage = string.Empty;
+
+            if (IsRegistrationMode)
+            {
+                _selectedRole = RoleEnum.User;
+                OnPropertyChanged(nameof(IsCustomerRole));
+                OnPropertyChanged(nameof(IsSellerRole));
+            }
         }
     }
 }
