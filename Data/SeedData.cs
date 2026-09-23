@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Marketplace_Group_Project.Services;
 
 namespace Marketplace_Group_Project.Data
 {
@@ -16,27 +17,27 @@ namespace Marketplace_Group_Project.Data
 			var context = (MarketplaceDbContext)ctx;
 
 			//user-ы на будущее, когда с методом шифрования определимся
-			//if(!context.Users.Any())
-			//{
-			//	await context.Users.AddRangeAsync(
-			//		new User
-			//		{
-			//			Login = "admin",
-			//			Email = "test_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.Admin,
-			//		},
-			//		new User
-			//		{
-			//			Login = "guest",
-			//			Email = "guest_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.User,
-			//		}
-			//	);
-			//}
+			if (!context.Users.Any())
+			{
+				context.Users.AddRangeAsync(
+					new User
+					{
+						Login = "admin",
+						Email = "test_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("adm1"),
+						Role = RoleEnum.Admin,
+					},
+					new User
+					{
+						Login = "guest",
+						Email = "guest_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("123$"),
+						Role = RoleEnum.User,
+					}
+				);
+			}
 
-			//await context.SaveChangesAsync();
+			context.SaveChangesAsync();
 
 			if (!context.Products.Any())
 			{
@@ -48,6 +49,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 89_999M,
 						StockQuantity = 37,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -74,6 +76,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 10_999M,
 						StockQuantity = 50,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -106,6 +109,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 7_649M,
 						StockQuantity = 40,
 						Category = CategoryEnum.Sport,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -131,6 +135,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 540M,
 						StockQuantity = 137,
 						Category = CategoryEnum.OfficeSupplies,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -164,27 +169,27 @@ namespace Marketplace_Group_Project.Data
 			var context = (MarketplaceDbContext)ctx;
 
 			//user-ы на будущее, когда с методом шифрования определимся
-			//if(!context.Users.Any())
-			//{
-			//	await context.Users.AddRangeAsync(
-			//		new User
-			//		{
-			//			Login = "admin",
-			//			Email = "test_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.Admin,
-			//		},
-			//		new User
-			//		{
-			//			Login = "guest",
-			//			Email = "guest_email@.com",
-			//			PasswordHash = "", //закинуть в зависимости от пароля  способа шифрования
-			//			Role = RoleEnum.User,
-			//		}
-			//	);
-			//}
+			if (!context.Users.Any())
+			{
+				await context.Users.AddRangeAsync(
+					new User
+					{
+						Login = "admin",
+						Email = "test_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("adm1"),
+						Role = RoleEnum.Admin,
+					},
+					new User
+					{
+						Login = "guest",
+						Email = "guest_email@.com",
+						PasswordHash = AuthenticationService.HashPassword("1234"),
+						Role = RoleEnum.User,
+					}
+				);
+			}
 
-			//await context.SaveChangesAsync();
+			await context.SaveChangesAsync();
 
 			if (!context.Products.Any())
 			{
@@ -196,6 +201,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 89_999M,
 						StockQuantity = 37,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -222,6 +228,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 10_999M,
 						StockQuantity = 50,
 						Category = CategoryEnum.Devices,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -254,6 +261,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 7_649M,
 						StockQuantity = 40,
 						Category = CategoryEnum.Sport,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{
@@ -279,6 +287,7 @@ namespace Marketplace_Group_Project.Data
 						Price = 540M,
 						StockQuantity = 137,
 						Category = CategoryEnum.OfficeSupplies,
+						SellerId = context.Users.First(u => u.Role == RoleEnum.Admin).Id,
 
 						Characteristics = new()
 						{

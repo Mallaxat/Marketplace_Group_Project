@@ -60,7 +60,7 @@ namespace Marketplace_Group_Project.Services
         {
             CurrentUser = null;
 
-            var loginWindow = new MainWindow();
+            var loginWindow = new AuthWindow();
             OpenWindow(loginWindow);
         }
 
@@ -79,7 +79,7 @@ namespace Marketplace_Group_Project.Services
                 window.Close();
             }
 
-            newWindow.Show();
+            newWindow.ShowDialog();
         }
     }
 }

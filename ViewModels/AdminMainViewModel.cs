@@ -355,9 +355,7 @@ namespace Marketplace_Group_Project.ViewModels
         {
             Orders.Clear();
 
-            // TODO: заменить на GetAllOrders(), когда метод появится в MarketplaceService.
-            // Сейчас админ видит только свои заказы.
-            var orders = _marketplaceService.GetUserOrders(_currentUser.Id);
+            var orders = _marketplaceService.GetAllOrders();
             foreach (var order in orders)
                 Orders.Add(order);
         }

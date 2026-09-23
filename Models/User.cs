@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,7 @@ namespace Marketplace_Group_Project.Models
 
 		public List<Order> Orders { get; set; }
 
+		public List<Product> Products { get; set; }
 	}
 
 	public enum RoleEnum
