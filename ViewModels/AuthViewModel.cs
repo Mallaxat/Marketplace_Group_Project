@@ -14,6 +14,13 @@ namespace Marketplace_Group_Project.ViewModels
         private readonly AuthenticationService _authService;
         private readonly AppNavigationService _appNaviService;
         private readonly NetworkService _networkService;
+        private RoleEnum _selectedRole = RoleEnum.User;
+
+        public RoleEnum SelectedRole
+        {
+            get => _selectedRole;
+            set => SetProperty(ref _selectedRole, value);
+        }
 
         private string _login = string.Empty;
         public string Login
@@ -70,6 +77,14 @@ namespace Marketplace_Group_Project.ViewModels
             get => _isConfirmationMode;
             set => SetProperty(ref _isConfirmationMode, value);
         }
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
 
         // Скрытое: сгенерированный код
         private string _generatedCode = string.Empty;
@@ -138,68 +153,78 @@ namespace Marketplace_Group_Project.ViewModels
 
         private async Task RegisterAsync()
         {
+            IsBusy = true;
             ErrorMessage = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(Login))
-            {
-                ErrorMessage = "Введите логин.";
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                ErrorMessage = "Введите email.";
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(Password))
-            {
-                ErrorMessage = "Введите пароль.";
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(RepeatPassword))
-            {
-                ErrorMessage = "Повторите пароль.";
-                return;
-            }
-
-            if (Password != RepeatPassword)
-            {
-                ErrorMessage = "Пароли не совпадают.";
-                return;
-            }
-
-            if (await _authService.IsLoginExists(Login))
-            {
-                ErrorMessage = "Логин уже занят.";
-                return;
-            }
-
-            if (await _authService.IsEmailExists(Email))
-            {
-                ErrorMessage = "Email уже занят.";
-                return;
-            }
-
-            // 6-значный код
-            _generatedCode = new Random().Next(100000, 999999).ToString();
-
-            // Отправляем письмо
             try
             {
-                await _networkService.ConnectAsync();
+                if (string.IsNullOrWhiteSpace(Login))
+                {
+                    ErrorMessage = "Введите логин.";
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(Email))
+                {
+                    ErrorMessage = "Введите email.";
+                    return;
+                }
+
+                if (!System.Text.RegularExpressions.Regex.IsMatch(
+                    Email,
+                    @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
+                {
+                    ErrorMessage = "Некорректный формат email.";
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(Password))
+                {
+                    ErrorMessage = "Введите пароль.";
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(RepeatPassword))
+                {
+                    ErrorMessage = "Повторите пароль.";
+                    return;
+                }
+
+                if (Password != RepeatPassword)
+                {
+                    ErrorMessage = "Пароли не совпадают.";
+                    return;
+                }
+
+                if (await _authService.IsLoginExists(Login))
+                {
+                    ErrorMessage = "Логин уже занят.";
+                    return;
+                }
+
+                if (await _authService.IsEmailExists(Email))
+                {
+                    ErrorMessage = "Email уже занят.";
+                    return;
+                }
+
+                // 6-значный код
+                _generatedCode = new Random().Next(100000, 999999).ToString();
+
+                // Отправляем письмо
                 await _networkService.SendMessageAsync(
-                    toEmail: Email,
-                    subject: "Код подтверждения регистрации",
-                    body: $"Ваш код подтверждения: {_generatedCode}"
-                );
-                await _networkService.DisconnectAsync();
+                        toEmail: Email,
+                        subject: "Код подтверждения регистрации",
+                        body: $"Ваш код подтверждения: {_generatedCode}"
+                        );
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ErrorMessage = $"Не удалось отправить письмо: {ex.Message}";
                 return;
+            }
+            finally
+            {
+                IsBusy = false;
             }
 
             // Переключаем UI на ввод кода
@@ -224,7 +249,7 @@ namespace Marketplace_Group_Project.ViewModels
             }
 
             // Код верный — создаём пользователя в БД
-            bool success = await _authService.Register(Login, Email, Password, RoleEnum.User);
+            bool success = await _authService.Register(Login, Email, Password, SelectedRole);
 
             if (!success)
             {

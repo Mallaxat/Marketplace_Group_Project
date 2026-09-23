@@ -51,5 +51,11 @@ namespace Marketplace_Group_Project.Views
         {
             _viewModel.RepeatPassword = RepeatPwdBox.Password;
         }
+
+        /*protected override void OnClosed(EventArgs e)
+        {
+            networkService.Dispose();
+            base.OnClosed(e);
+        }*/
     }
 }
