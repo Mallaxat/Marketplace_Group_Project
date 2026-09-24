@@ -390,7 +390,20 @@ namespace Marketplace_Group_Project.ViewModels
             if (SelectedOrder == null)
                 return;
 
-            _marketplaceService.ChangeOrderStatus(SelectedOrder, SelectedStatus);
+            if(SelectedOrder.Status == StatusEnum.Done || SelectedOrder.Status == StatusEnum.Canceled)
+				return;
+
+            if(SelectedStatus == StatusEnum.Canceled)
+            {
+                if(!_marketplaceService.CancelOrder(SelectedOrder.Id))
+                {
+					MessageBox.Show($"Не удалось отменить заказ: Непредвиденная ошибка",
+								"Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+				}
+            }
+
+			_marketplaceService.ChangeOrderStatus(SelectedOrder, SelectedStatus);
             LoadOrders();
         }
 
