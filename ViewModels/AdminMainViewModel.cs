@@ -67,7 +67,11 @@ namespace Marketplace_Group_Project.ViewModels
                 _ => DeactivateProduct(),
                 _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
 
-            AddProductCommand = new RelayCommand(
+			ActivateProductCommand = new RelayCommand(
+			   _ => ActivateProduct(),
+			   _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
+
+			AddProductCommand = new RelayCommand(
                 _ => AddProduct(),
                 _ => CanAddProduct());
 
@@ -101,7 +105,7 @@ namespace Marketplace_Group_Project.ViewModels
             LoadOrders();
         }
 
-        public ObservableCollection<Product> Products { get; }
+		public ObservableCollection<Product> Products { get; }
         public ObservableCollection<Order> Orders { get; }
         public ObservableCollection<StatusEnum> Statuses { get; }
         public ObservableCollection<CategoryEnum> Categories { get; }
@@ -197,7 +201,8 @@ namespace Marketplace_Group_Project.ViewModels
 
         public ICommand RefreshProductsCommand { get; }
         public ICommand DeactivateProductCommand { get; }
-        public ICommand AddProductCommand { get; }
+		public ICommand ActivateProductCommand { get; }
+		public ICommand AddProductCommand { get; }
         public ICommand StartEditProductCommand { get; }
         public ICommand SaveProductCommand { get; }
         public ICommand CancelEditCommand { get; }
@@ -317,7 +322,20 @@ namespace Marketplace_Group_Project.ViewModels
             LoadProducts();
         }
 
-        private void LoadCharacteristics()
+		private void ActivateProduct()
+		{
+			if (SelectedProduct == null)
+				return;
+
+			if (SelectedProduct.SellerId != _currentUser.Id)
+				return;
+
+            SelectedProduct.IsActive = true;
+			_marketplaceService.UpdateProduct(SelectedProduct);
+			LoadProducts();
+		}
+
+		private void LoadCharacteristics()
         {
             Characteristics.Clear();
             if (SelectedProduct == null)
