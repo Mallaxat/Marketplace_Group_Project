@@ -392,7 +392,7 @@ namespace Marketplace_Group_Project.ViewModels
 
             if (SelectedOrder.Status == StatusEnum.Done || SelectedOrder.Status == StatusEnum.Canceled)
             {
-				MessageBox.Show($"Нельзя изменить статус заказа",
+				MessageBox.Show($"Нельзя изменить статус выбранного заказа",
 								"Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
             }
