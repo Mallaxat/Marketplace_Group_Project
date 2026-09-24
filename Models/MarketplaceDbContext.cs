@@ -20,7 +20,7 @@ namespace Marketplace_Group_Project.Models
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer($@"Server=(localdb)\mssqllocaldb;Database=MarketplaceDB;Trusted_Connection=True;")
+			optionsBuilder.UseSqlServer(@"Server=localhost;Database=MarketplaceDB;Trusted_Connection=True;TrustServerCertificate=True;")
 				.UseSeeding((context, _) =>
 				{
 					// Этот код выполнится после Migrate(), если данных ещё нет
