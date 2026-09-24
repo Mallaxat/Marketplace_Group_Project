@@ -85,13 +85,24 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Button Grid.Row="2"
-                            Content="Деактивировать выбранный товар"
-                            Width="250" Height="34"
-                            HorizontalAlignment="Left"
-                            Margin="0,10,0,0"
-							Style="{StaticResource DangerButton}"
-                            Command="{Binding DeactivateProductCommand}" />
+					<StackPanel Grid.Row="2" Orientation="Horizontal">
+						<Button Content="Деактивировать выбранный товар"
+                                 Width="250" Height="36"
+                                 HorizontalAlignment="Left"
+                                 Margin="5"
+						        Style="{StaticResource DangerButton}"
+                                Command="{Binding DeactivateProductCommand}" />
+
+						<Button
+                             Content="Активировать выбранный товар"
+                             Width="250" Height="36"
+                             HorizontalAlignment="Left"
+                             Margin="5"
+						    Style="{StaticResource BaseButton}"
+                            Command="{Binding ActivateProductCommand}" />
+					</StackPanel>
+
+                
 
                     <!-- Блок добавления нового товара -->
 					<GroupBox Grid.Row="3" Header="Добавить новый товар" Foreground="{StaticResource TextMutedBrush}" Margin="0,15,0,0" Padding="15">
