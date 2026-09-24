@@ -224,6 +224,7 @@
 						<DataGrid ItemsSource="{Binding UserOrders}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
+							  CanUserResizeRows="True"
                               SelectionMode="Single"
 							  BorderThickness="0">
 							<DataGrid.Columns>
@@ -231,6 +232,13 @@
 								<DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" Width="2*" />
 								<DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource enumConverter}}" Width="1*" />
 								<DataGridTextColumn Header="Сумма" Binding="{Binding TotalPrice, StringFormat='{}{0:C}'}" Width="1*" />
+								<DataGridTextColumn Header="Товары" Binding="{Binding ProductsSummary}" Width="4*" >
+									<DataGridTextColumn.ElementStyle>
+										<Style TargetType="TextBlock">
+											<Setter Property="TextWrapping" Value="Wrap"></Setter>
+										</Style>
+									</DataGridTextColumn.ElementStyle>
+								</DataGridTextColumn>
 							</DataGrid.Columns>
 						</DataGrid>
 					</Border>

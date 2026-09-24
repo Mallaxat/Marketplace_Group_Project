@@ -23,7 +23,7 @@ namespace Marketplace_Group_Project.Views
             InitializeComponent();
 		}
 
-		private void dtg_products_CurrentCellChanged(object sender, EventArgs e)
+		private void dtg_products_TextInput(object sender, EventArgs e)
 		{
 			if (this.DataContext != null)
 			{

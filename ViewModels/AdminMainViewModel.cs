@@ -32,8 +32,8 @@ namespace Marketplace_Group_Project.ViewModels
         private string _newCharacteristicValue = string.Empty;
         private UnitEnum _newCharacteristicUnit = UnitEnum.None;
 
-        private Order? _selectedOrder;
-        private StatusEnum _selectedStatus;
+		private OrderDisplay? _selectedOrder;
+		private StatusEnum _selectedStatus;
 
         public AdminMainViewModel(MarketplaceService marketplaceService,
                                   AppNavigationService navigationService,
@@ -44,8 +44,8 @@ namespace Marketplace_Group_Project.ViewModels
             _currentUser = currentUser;
 
             Products = new ObservableCollection<Product>();
-            Orders = new ObservableCollection<Order>();
-            Statuses = new ObservableCollection<StatusEnum>();
+			Orders = new ObservableCollection<OrderDisplay>();
+			Statuses = new ObservableCollection<StatusEnum>();
             Categories = new ObservableCollection<CategoryEnum>();
             Units = new ObservableCollection<UnitEnum>();
             Characteristics = new ObservableCollection<ProductCharacteristic>();
@@ -97,7 +97,7 @@ namespace Marketplace_Group_Project.ViewModels
 
             ChangeOrderStatusCommand = new RelayCommand(
                 _ => ChangeOrderStatus(),
-                _ => SelectedOrder != null);
+                _ => SelectedOrder != null && (SelectedOrder.Status != StatusEnum.Done || SelectedOrder.Status != StatusEnum.Canceled) );
 
             LogoutCommand = new RelayCommand(_ => Logout());
 
@@ -106,8 +106,8 @@ namespace Marketplace_Group_Project.ViewModels
         }
 
 		public ObservableCollection<Product> Products { get; }
-        public ObservableCollection<Order> Orders { get; }
-        public ObservableCollection<StatusEnum> Statuses { get; }
+		public ObservableCollection<OrderDisplay> Orders { get; }
+		public ObservableCollection<StatusEnum> Statuses { get; }
         public ObservableCollection<CategoryEnum> Categories { get; }
         public ObservableCollection<UnitEnum> Units { get; }
         public ObservableCollection<ProductCharacteristic> Characteristics { get; }
@@ -187,13 +187,9 @@ namespace Marketplace_Group_Project.ViewModels
             set => SetProperty(ref _newCharacteristicUnit, value);
         }
 
-        public Order? SelectedOrder
-        {
-            get => _selectedOrder;
-            set => SetProperty(ref _selectedOrder, value);
-        }
+		public OrderDisplay? SelectedOrder { get => _selectedOrder; set => SetProperty(ref _selectedOrder, value); }
 
-        public StatusEnum SelectedStatus
+		public StatusEnum SelectedStatus
         {
             get => _selectedStatus;
             set => SetProperty(ref _selectedStatus, value);
@@ -398,25 +394,45 @@ namespace Marketplace_Group_Project.ViewModels
             LoadCharacteristics();
         }
 
-        private void LoadOrders()
-        {
-            Orders.Clear();
-            var orders = _marketplaceService.GetAllOrders();
-            foreach (var order in orders)
-                Orders.Add(order);
-        }
+		private void LoadOrders()
+		{
+			Orders.Clear();
+			var orders = _marketplaceService.GetAllOrders();
+			foreach (var order in orders)
+			{
+				string summary = BuildOrderSummary(order.Id);
+				Orders.Add(new OrderDisplay(order, summary));
+			}
+		}
 
-        private void ChangeOrderStatus()
+		/// <summary>
+		/// Собирает строку со всеми товарами заказа: "Товар 1 ×2, Товар 2, Товар 3".
+		/// </summary>
+		private string BuildOrderSummary(int orderId)
+		{
+			var items = _marketplaceService.GetOrderItems(orderId)
+				.Where(i => i.Quantity > 0)
+				.ToList();
+
+			if (items.Count == 0) return "(нет данных)";
+
+			var names = new List<string>();
+			foreach (var item in items)
+			{
+				var product = _marketplaceService.GetProductById(item.ProductId);
+				string name = product?.Name ?? $"Товар #{item.ProductId}";
+				if (item.Quantity > 1)
+					name += $" ×{item.Quantity}";
+				names.Add(name);
+			}
+
+			return string.Join(", ", names);
+		}
+
+		private void ChangeOrderStatus()
         {
             if (SelectedOrder == null)
                 return;
-
-            if (SelectedOrder.Status == StatusEnum.Done || SelectedOrder.Status == StatusEnum.Canceled)
-            {
-				MessageBox.Show($"Нельзя изменить статус выбранного заказа",
-								"Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-				return;
-            }
 
             if(SelectedStatus == StatusEnum.Canceled)
             {
@@ -428,7 +444,7 @@ namespace Marketplace_Group_Project.ViewModels
 				}
             }
 
-			_marketplaceService.ChangeOrderStatus(SelectedOrder, SelectedStatus);
+			_marketplaceService.ChangeOrderStatus(SelectedOrder.Order, SelectedStatus);
             LoadOrders();
         }
 
