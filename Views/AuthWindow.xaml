@@ -80,14 +80,14 @@
                 <!-- Login -->
 				<StackPanel Grid.Row="2" Margin="0,0,0,10">
 					<TextBlock Text="Логин" Style="{StaticResource FieldLabel}"/>
-					<TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
+					<TextBox Name="txt_login" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
 				</StackPanel>
 
 				<!-- Email (при регистрации) -->
 				<StackPanel Grid.Row="3" Margin="0,0,0,10"
                         Visibility="{Binding IsRegistrationMode, Converter={StaticResource BoolToVisibilityConverter}}">
 					<TextBlock Text="Email" Style="{StaticResource FieldLabel}"/>
-					<TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
+					<TextBox Name="txt_email" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
 				</StackPanel>
 
 				<!-- Password -->
@@ -107,16 +107,18 @@
 				<StackPanel Grid.Row="6"  Margin="0,0,0,10"
                 Visibility="{Binding IsConfirmationMode, Converter={StaticResource BoolToVisibilityConverter}}">
 					<TextBlock Text="Код подтверждения" Style="{StaticResource FieldLabel}"/>
-					<TextBox Text="{Binding ConfirmationCode, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
+					<TextBox Name="txt_code" Text="{Binding ConfirmationCode, UpdateSourceTrigger=PropertyChanged}" Height="32"/>
 				</StackPanel>
 
 				<!-- Кнопка "Подтвердить" (только в режиме подтверждения) -->
 				<Button Grid.Row="7"
+				Name="btn_confirm"
                 Content="Подтвердить"
                 Command="{Binding ConfirmCodeCommand}"
                 Height="36" Margin="0,10,0,4"
                 Style="{StaticResource BaseButton}"
-                Visibility="{Binding IsConfirmationMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                Visibility="{Binding IsConfirmationMode, Converter={StaticResource BoolToVisibilityConverter}}"
+				Click="btn_confirm_Click"/>
 
 				<!-- Кнопка "Зарегистрироваться" скрывается, если включён режим подтверждения -->
 				<Button Grid.Row="8"
@@ -143,7 +145,7 @@
                        Margin="0,12,0,0"
                        FontSize="13"
                        Foreground="{StaticResource TextMutedBrush}">
-                <Hyperlink Command="{Binding SwitchModeCommand}">
+                <Hyperlink Command="{Binding SwitchModeCommand}" Click="Hyperlink_Click">
                     <TextBlock Text="{Binding IsRegistrationMode, Converter={StaticResource BoolToSwitchTextConverter}}"/>
                 </Hyperlink>
             </TextBlock>

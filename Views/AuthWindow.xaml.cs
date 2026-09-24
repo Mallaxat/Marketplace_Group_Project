@@ -51,5 +51,24 @@ namespace Marketplace_Group_Project.Views
         {
             _viewModel.RepeatPassword = RepeatPwdBox.Password;
         }
-    }
+
+		private void btn_confirm_Click(object sender, RoutedEventArgs e)
+		{
+            ClearForm();
+        }
+
+        private void ClearForm()
+        {
+            txt_login.Clear();
+            txt_email.Clear();
+            txt_code.Clear();
+            PwdBox.Clear();
+            RepeatPwdBox.Clear();
+        }
+
+		private void Hyperlink_Click(object sender, RoutedEventArgs e)
+		{
+            ClearForm();
+		}
+	}
 }
