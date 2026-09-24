@@ -52,6 +52,8 @@ namespace Marketplace_Group_Project.ViewModels
 
             foreach (StatusEnum status in Enum.GetValues(typeof(StatusEnum)))
                 Statuses.Add(status);
+            //Удаление статуса "Создан"
+            Statuses.Remove(StatusEnum.Created);
 
             foreach (CategoryEnum category in Enum.GetValues(typeof(CategoryEnum)))
                 Categories.Add(category);
