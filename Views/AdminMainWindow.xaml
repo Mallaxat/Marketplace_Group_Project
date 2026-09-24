@@ -93,7 +93,7 @@
 							Style="{StaticResource DangerButton}"
                             Command="{Binding DeactivateProductCommand}" />
 
-                    <GroupBox Grid.Row="3" Header="Добавить новый товар" Margin="0,15,0,0" Padding="10">
+					<GroupBox Grid.Row="3" Header="Добавить новый товар" Foreground="{StaticResource TextMutedBrush}" Margin="0,15,0,0" Padding="15">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
