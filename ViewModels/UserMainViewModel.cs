@@ -203,7 +203,6 @@ namespace Marketplace_Group_Project.ViewModels
             {
                 // Недостаточно товара на складе.
             }
-            catch (ArgumentOutOfRangeException) { }
         }
 
         private void LoadOrders()

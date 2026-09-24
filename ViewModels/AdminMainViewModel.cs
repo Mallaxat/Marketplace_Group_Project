@@ -132,7 +132,8 @@ namespace Marketplace_Group_Project.ViewModels
 
         public ICommand RefreshProductsCommand { get; }
         public ICommand DeactivateProductCommand { get; }
-        public ICommand AddProductCommand { get; }
+		public ICommand ActivateProductCommand { get; }
+		public ICommand AddProductCommand { get; }
         public ICommand StartEditProductCommand { get; }
         public ICommand SaveProductCommand { get; }
         public ICommand CancelEditCommand { get; }
@@ -237,7 +238,20 @@ namespace Marketplace_Group_Project.ViewModels
             LoadProducts();
         }
 
-        private void LoadCharacteristics()
+		private void ActivateProduct()
+		{
+			if (SelectedProduct == null)
+				return;
+
+			if (SelectedProduct.SellerId != _currentUser.Id)
+				return;
+
+            SelectedProduct.IsActive = true;
+			_marketplaceService.UpdateProduct(SelectedProduct);
+			LoadProducts();
+		}
+
+		private void LoadCharacteristics()
         {
             Characteristics.Clear();
             if (SelectedProduct == null) return;
