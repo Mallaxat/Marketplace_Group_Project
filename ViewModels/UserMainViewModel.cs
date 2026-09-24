@@ -221,6 +221,7 @@ namespace Marketplace_Group_Project.ViewModels
                 _marketplaceService.ClearCart(_currentUser.Id);
                 LoadCart();
                 LoadOrders();
+                LoadProducts();
             }
             catch (ArgumentOutOfRangeException)
             {
