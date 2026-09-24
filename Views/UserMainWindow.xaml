@@ -3,120 +3,117 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:converters="clr-namespace:Marketplace_Group_Project.Converters"
+        xmlns:converters="clr-namespace:Marketplace_Group_Project.Converters"
         mc:Ignorable="d"
         Title="Магазин — Покупатель"
         Height="700" Width="1100"
         WindowStartupLocation="CenterScreen"
-		Background="#F4F6F9"
+        Background="#F4F6F9"
         FontFamily="Segoe UI">
 
-	<Window.Resources>
-		<ResourceDictionary>
-			<converters:EnumDescriptionConverter x:Key="enumConverter"/>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Dictionaries/ViewsDictionary.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</Window.Resources>
+    <Window.Resources>
+        <ResourceDictionary>
+            <converters:EnumDescriptionConverter x:Key="enumConverter"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Dictionaries/ViewsDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
 
-	<Grid Margin="16">
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Верхняя панель -->
-		<Border Grid.Row="0"
+        <Border Grid.Row="0"
                 Background="{StaticResource SurfaceBrush}"
                 BorderBrush="{StaticResource BorderSoftBrush}"
                 BorderThickness="1"
                 CornerRadius="10"
                 Padding="16,10"
                 Margin="0,0,0,12">
-			<DockPanel>
-				<Button DockPanel.Dock="Right"
-                    Content="Выйти"
-                    Width="100" Height="32"
-					Style="{StaticResource GhostButton}"
-                    Command="{Binding LogoutCommand}" />
-				<TextBlock Text="{Binding CurrentUserName, StringFormat='Пользователь: {0}'}"
-                       VerticalAlignment="Center"
-                       FontSize="15" FontWeight="Bold"
-                       Foreground="{StaticResource TextPrimaryBrush}" />
-			</DockPanel>
-		</Border>
+            <DockPanel>
+                <Button DockPanel.Dock="Right"
+                        Content="Выйти"
+                        Width="100" Height="32"
+                        Style="{StaticResource GhostButton}"
+                        Command="{Binding LogoutCommand}" />
+                <TextBlock Text="{Binding CurrentUserName, StringFormat='Пользователь: {0}'}"
+                           VerticalAlignment="Center"
+                           FontSize="15" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}" />
+            </DockPanel>
+        </Border>
 
-		<!-- Вкладки -->
         <TabControl Grid.Row="1">
 
-            <!-- ТОВАРЫ -->
             <TabItem Header="Товары">
-				<Grid Margin="4,12,4,4">
+                <Grid Margin="4,12,4,4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-					<Border Grid.Row="0"
+                    <Border Grid.Row="0"
                             Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderSoftBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="12,10"
                             Margin="0,0,0,12">
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,6,0"
-									   Foreground="{StaticResource TextMutedBrush}"/>
-							<TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Width="220" Height="30" Margin="0,0,16,0" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,6,0"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="220" Height="30" Margin="0,0,16,0" />
 
-							<TextBlock Text="Категория:" VerticalAlignment="Center" Margin="0,0,6,0"
-									   Foreground="{StaticResource TextMutedBrush}"/>
-							<ComboBox ItemsSource="{Binding Categories}"
-                                  SelectedItem="{Binding SelectedCategory}"
-                                  Width="200" Height="30" Margin="0,0,16,0" >
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<TextBlock Text="{Binding Converter={StaticResource enumConverter}}" />
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
+                            <TextBlock Text="Категория:" VerticalAlignment="Center" Margin="0,0,6,0"
+                                       Foreground="{StaticResource TextMutedBrush}"/>
+                            <ComboBox ItemsSource="{Binding Categories}"
+                                      SelectedItem="{Binding SelectedCategory}"
+                                      Width="200" Height="30" Margin="0,0,16,0" >
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource enumConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
-							<Button Content="Сбросить"
-                                Width="100" Height="30"
-								Style="{StaticResource GhostButton}"
-                                Command="{Binding ResetFilterCommand}" />
-						</StackPanel>
-					</Border>
+                            <Button Content="Сбросить"
+                                    Width="100" Height="30"
+                                    Style="{StaticResource GhostButton}"
+                                    Command="{Binding ResetFilterCommand}" />
+                        </StackPanel>
+                    </Border>
 
-					<Border Grid.Row="1"
+                    <Border Grid.Row="1"
                             Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderSoftBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="1">
 
-						<DataGrid ItemsSource="{Binding FilteredProducts}"
-                              SelectedItem="{Binding SelectedProduct}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-							  BorderThickness="0">
-							<DataGrid.Columns>
-								<DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="2*" />
-								<DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="3*" />
-								<DataGridTextColumn Header="Категория" Binding="{Binding Category, Converter={StaticResource enumConverter}}" Width="1*" />
-								<DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat='{}{0:C}'}" Width="1*" />
-								<DataGridTextColumn Header="На складе" Binding="{Binding StockQuantity}" Width="1*" />
-							</DataGrid.Columns>
-						</DataGrid>
-					</Border>
+                        <DataGrid ItemsSource="{Binding FilteredProducts}"
+                                  SelectedItem="{Binding SelectedProduct}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single"
+                                  BorderThickness="0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="2*" />
+                                <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="3*" />
+                                <DataGridTextColumn Header="Категория" Binding="{Binding Category, Converter={StaticResource enumConverter}}" Width="1*" />
+                                <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat='{}{0:C}'}" Width="1*" />
+                                <DataGridTextColumn Header="На складе" Binding="{Binding StockQuantity}" Width="1*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
 
-					<Button Grid.Row="2"
+                    <Button Grid.Row="2"
                             Content="Добавить в корзину"
-                             Width="220" Height="34"
+                            Width="220" Height="34"
                             HorizontalAlignment="Left"
                             Margin="0,12,0,0"
                             Style="{StaticResource BaseButton}"
@@ -124,84 +121,82 @@
                 </Grid>
             </TabItem>
 
-            <!-- КОРЗИНА -->
             <TabItem Header="Корзина">
-				<Grid Margin="4,12,4,4">
+                <Grid Margin="4,12,4,4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-					<Border Grid.Row="0"
+                    <Border Grid.Row="0"
                             Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderSoftBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="1">
-						<DataGrid ItemsSource="{Binding CartItems}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-							  BorderThickness="0">
-							<DataGrid.Columns>
-								<DataGridTextColumn Header="Товар" Binding="{Binding Product.Name}" Width="3*" />
-								<DataGridTextColumn Header="Цена" Binding="{Binding Product.Price, StringFormat='{}{0:C}'}" Width="1*" />
-								<DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="1*" />
-								<DataGridTemplateColumn Header="Действия" Width="2*">
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<StackPanel Orientation="Horizontal">
-												<Button Content="+"
-                                                    Width="32" Height="26" Margin="2"
-													Style="{StaticResource MiniButton}"
-                                                    Command="{Binding DataContext.IncreaseQuantityCommand,
-                                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}" />
-												<Button Content="−"
-                                                    Width="32" Height="26" Margin="2"
-                                                    Style="{StaticResource MiniButton}"
-                                                    Command="{Binding DataContext.DecreaseQuantityCommand,
-                                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}" />
-												<Button Content="Удалить"
-                                                    Width="90" Height="26" Margin="2"
-                                                    Style="{StaticResource MiniDangerButton}"
-                                                    Command="{Binding DataContext.RemoveFromCartCommand,
-                                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding}" />
-											</StackPanel>
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-							</DataGrid.Columns>
-						</DataGrid>
-					</Border>
+                        <DataGrid ItemsSource="{Binding CartItems}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single"
+                                  BorderThickness="0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Товар" Binding="{Binding Product.Name}" Width="3*" />
+                                <DataGridTextColumn Header="Цена" Binding="{Binding Product.Price, StringFormat='{}{0:C}'}" Width="1*" />
+                                <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" Width="1*" />
+                                <DataGridTemplateColumn Header="Действия" Width="2*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="+"
+                                                        Width="32" Height="26" Margin="2"
+                                                        Style="{StaticResource MiniButton}"
+                                                        Command="{Binding DataContext.IncreaseQuantityCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" />
+                                                <Button Content="−"
+                                                        Width="32" Height="26" Margin="2"
+                                                        Style="{StaticResource MiniButton}"
+                                                        Command="{Binding DataContext.DecreaseQuantityCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" />
+                                                <Button Content="Удалить"
+                                                        Width="90" Height="26" Margin="2"
+                                                        Style="{StaticResource MiniDangerButton}"
+                                                        Command="{Binding DataContext.RemoveFromCartCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
 
-					<Border Grid.Row="1"
+                    <Border Grid.Row="1"
                             Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderSoftBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="16,10"
                             Margin="0,12,0,0">
-						<StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-							<TextBlock Text="{Binding CartTotal, StringFormat='Итого: {0:C}'}"
-                                   FontSize="16" FontWeight="Bold"
-                                   VerticalAlignment="Center" Margin="0,0,20,0" 
-								   Foreground="{StaticResource TextPrimaryBrush}"/>
-							<Button Content="Оформить заказ"
-                                 Width="170" Height="34"
-                                 Style="{StaticResource SuccessButton}"
-                                Command="{Binding CheckoutCommand}" />
-						</StackPanel>
-					</Border>
-				</Grid>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding CartTotal, StringFormat='Итого: {0:C}'}"
+                                       FontSize="16" FontWeight="Bold"
+                                       VerticalAlignment="Center" Margin="0,0,20,0"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <Button Content="Оформить заказ"
+                                    Width="170" Height="34"
+                                    Style="{StaticResource SuccessButton}"
+                                    Command="{Binding CheckoutCommand}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </TabItem>
 
-            <!-- МОИ ЗАКАЗЫ -->
             <TabItem Header="Мои заказы">
-				<Grid Margin="4,12,4,4">
+                <Grid Margin="4,12,4,4">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -215,26 +210,27 @@
                             Style="{StaticResource BaseButton}"
                             Command="{Binding RefreshOrdersCommand}" />
 
-					<Border Grid.Row="1"
+                    <Border Grid.Row="1"
                             Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderSoftBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="1">
-						<DataGrid ItemsSource="{Binding UserOrders}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              SelectionMode="Single"
-							  BorderThickness="0">
-							<DataGrid.Columns>
-								<DataGridTextColumn Header="Номер" Binding="{Binding Id}" Width="1*" />
-								<DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" Width="2*" />
-								<DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource enumConverter}}" Width="1*" />
-								<DataGridTextColumn Header="Сумма" Binding="{Binding TotalPrice, StringFormat='{}{0:C}'}" Width="1*" />
-							</DataGrid.Columns>
-						</DataGrid>
-					</Border>
-				</Grid>
+                        <DataGrid ItemsSource="{Binding UserOrders}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  SelectionMode="Single"
+                                  BorderThickness="0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding Id}" Width="1*" />
+                                <DataGridTextColumn Header="Дата" Binding="{Binding CreatedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" Width="2*" />
+                                <DataGridTextColumn Header="Статус" Binding="{Binding Status, Converter={StaticResource enumConverter}}" Width="1*" />
+                                <DataGridTextColumn Header="Сумма" Binding="{Binding TotalPrice, StringFormat='{}{0:C}'}" Width="1*" />
+                                <DataGridTextColumn Header="Товары" Binding="{Binding ProductsSummary}" Width="4*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
             </TabItem>
 
         </TabControl>
