@@ -14,7 +14,9 @@ namespace Marketplace_Group_Project.ViewModels
         private readonly AuthenticationService _authService;
         private readonly AppNavigationService _appNaviService;
         private readonly NetworkService _networkService;
-        
+
+        public event Action? RegistrationCompleted;
+
         private RoleEnum _selectedRole = RoleEnum.User;
 
         public bool IsCustomerRole
@@ -284,12 +286,20 @@ namespace Marketplace_Group_Project.ViewModels
 
             // Успех — сброс и возврат к входу
             _generatedCode = string.Empty;
+
+            Login = string.Empty;
+            Email = string.Empty;
             ConfirmationCode = string.Empty;
-            IsConfirmationMode = false;
-            IsRegistrationMode = false;
             Password = string.Empty;
             RepeatPassword = string.Empty;
+
+            IsConfirmationMode = false;
+            IsRegistrationMode = false;
+
             ErrorMessage = "Успешная регистрация! Войдите в аккаунт.";
+
+            // Сообщаем окну, что нужно очистить PasswordBox
+            RegistrationCompleted?.Invoke();
         }
 
         private void SwitchMode()
