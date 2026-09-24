@@ -9,59 +9,51 @@ namespace Marketplace_Group_Project.Network
 {
     public class NetworkService
     {
-        private SmtpClient? _client;
-        private readonly string _smtpHost;
-        private readonly int _smtpPort;
-        private readonly bool _useSsl;
+        private readonly SmtpClient _client;
         private readonly string _emailFrom;
-        private readonly string _password;
 
         public NetworkService(string smtpHost, int smtpPort, bool useSsl, string emailFrom, string password)
         {
-            _smtpHost = smtpHost;
-            _smtpPort = smtpPort;
-            _useSsl = useSsl;
+            if (string.IsNullOrWhiteSpace(emailFrom))
+                throw new ArgumentException("Email отправителя не может быть пустым.", nameof(emailFrom));
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Пароль не может быть пустым.", nameof(password));
+
             _emailFrom = emailFrom;
-            _password = password;
-        }
-
-        // Connect() — подключение к SMTP-серверу
-        public async Task ConnectAsync()
-        {
-            if (_client != null && _client.IsConnected)
-                return;
-
             _client = new SmtpClient();
-            await _client.ConnectAsync(_smtpHost, _smtpPort, _useSsl);
-            await _client.AuthenticateAsync(_emailFrom, _password);
+
+            try
+            {
+                _client.Connect(smtpHost, smtpPort, useSsl);
+                _client.Authenticate(emailFrom, password);
+            }
+            catch (Exception ex)
+            {
+                _client.Dispose();
+                throw new InvalidOperationException($"Не удалось подключиться к SMTP-серверу: {ex.Message}", ex);
+            }
         }
 
+        //  -= УДАЛЕНЫ =-
+        // Connect() — подключение к SMTP-серверу
         // Disconnect() — отключение
-        public async Task DisconnectAsync()
-        {
-            if (_client == null) return;
-            if (_client.IsConnected)
-                await _client.DisconnectAsync(true);
-            _client.Dispose();
-            _client = null;
-        }
 
-        // SendMessage() — отправка письма
         public async Task SendMessageAsync(string toEmail, string subject, string body)
         {
+            if (string.IsNullOrWhiteSpace(toEmail))
+                throw new ArgumentException("Email получателя не может быть пустым.", nameof(toEmail));
+            /*if (string.IsNullOrWhiteSpace(subject))
+                throw new ArgumentException("Тема письма не может быть пустой.", nameof(subject));
+            if (string.IsNullOrWhiteSpace(body))
+                throw new ArgumentException("Тело письма не может быть пустым.", nameof(body));*/
+
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Marketplace", _emailFrom));
             message.To.Add(new MailboxAddress("", toEmail));
             message.Subject = subject;
             message.Body = new TextPart("plain") { Text = body };
 
-            if (_client == null || !_client.IsConnected)
-            {
-                throw new InvalidOperationException("Сначала вызовите ConnectAsync().");
-            }
-
             await _client.SendAsync(message);
         }
-
     }
 }
