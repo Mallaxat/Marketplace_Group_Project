@@ -1,16 +1,13 @@
 ﻿using Marketplace_Group_Project.Models;
 using Marketplace_Group_Project.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    
-    /// ViewModel главного окна покупателя.
-    /// Отвечает за отображение товаров, корзины и заказов пользователя.
-    
     public class UserMainViewModel : ViewModelBase
     {
         private readonly MarketplaceService _marketplaceService;
@@ -33,12 +30,10 @@ namespace Marketplace_Group_Project.ViewModels
             FilteredProducts = new ObservableCollection<Product>();
             Categories = new ObservableCollection<CategoryEnum>();
             CartItems = new ObservableCollection<CartItem>();
-            UserOrders = new ObservableCollection<Order>();
+            UserOrders = new ObservableCollection<OrderDisplay>();
 
             foreach (CategoryEnum category in Enum.GetValues(typeof(CategoryEnum)))
-            {
                 Categories.Add(category);
-            }
 
             SearchCommand = new RelayCommand(_ => ApplyFilter());
             FilterByCategoryCommand = new RelayCommand(_ => ApplyFilter());
@@ -60,28 +55,20 @@ namespace Marketplace_Group_Project.ViewModels
         public ObservableCollection<Product> FilteredProducts { get; }
         public ObservableCollection<CategoryEnum> Categories { get; }
         public ObservableCollection<CartItem> CartItems { get; }
-        public ObservableCollection<Order> UserOrders { get; }
+        public ObservableCollection<OrderDisplay> UserOrders { get; }
 
         public string CurrentUserName => _currentUser.Login;
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (SetProperty(ref _searchText, value))
-                    ApplyFilter();
-            }
+            set { if (SetProperty(ref _searchText, value)) ApplyFilter(); }
         }
 
         public CategoryEnum? SelectedCategory
         {
             get => _selectedCategory;
-            set
-            {
-                if (SetProperty(ref _selectedCategory, value))
-                    ApplyFilter();
-            }
+            set { if (SetProperty(ref _selectedCategory, value)) ApplyFilter(); }
         }
 
         public Product? SelectedProduct
@@ -91,7 +78,6 @@ namespace Marketplace_Group_Project.ViewModels
         }
 
         public decimal CartTotal => _marketplaceService.GetCartTotal(_currentUser.Id);
-
         public bool HasOrders => UserOrders.Any();
 
         public ICommand SearchCommand { get; }
@@ -110,9 +96,7 @@ namespace Marketplace_Group_Project.ViewModels
             Products.Clear();
             var products = _marketplaceService.GetProducts().Where(p => p.IsActive);
             foreach (var product in products)
-            {
                 Products.Add(product);
-            }
             ApplyFilter();
         }
 
@@ -121,20 +105,14 @@ namespace Marketplace_Group_Project.ViewModels
             var query = Products.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(SearchText))
-            {
                 query = query.Where(p => p.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
-            }
 
             if (SelectedCategory.HasValue)
-            {
                 query = query.Where(p => p.Category == SelectedCategory.Value);
-            }
 
             FilteredProducts.Clear();
             foreach (var product in query)
-            {
                 FilteredProducts.Add(product);
-            }
         }
 
         private void ResetFilter()
@@ -148,16 +126,13 @@ namespace Marketplace_Group_Project.ViewModels
             CartItems.Clear();
             var items = _marketplaceService.GetCartItems(_currentUser.Id);
             foreach (var item in items)
-            {
                 CartItems.Add(item);
-            }
             OnPropertyChanged(nameof(CartTotal));
         }
 
         private void AddToCart()
         {
-            if (SelectedProduct == null)
-                return;
+            if (SelectedProduct == null) return;
 
             var cartItem = new CartItem
             {
@@ -166,37 +141,34 @@ namespace Marketplace_Group_Project.ViewModels
                 Quantity = 1
             };
 
-            _marketplaceService.AddToCart(cartItem);
-            LoadCart();
+            try
+            {
+                _marketplaceService.AddToCart(cartItem);
+                LoadCart();
+            }
+            catch (ArgumentException) { }
         }
 
         private void RemoveFromCart(CartItem? item)
         {
-            if (item == null)
-                return;
-
+            if (item == null) return;
             _marketplaceService.RemoveFromCart(item.Id);
             LoadCart();
         }
 
         private void ChangeQuantity(CartItem? item, int delta)
         {
-            if (item == null)
-                return;
+            if (item == null) return;
 
             int newQuantity = item.Quantity + delta;
-            if (newQuantity < 1)
-                return;
+            if (newQuantity < 1) return;
 
             try
             {
                 _marketplaceService.ChangeCartItemQauntity(item.Id, newQuantity);
                 LoadCart();
             }
-            catch (ArgumentException)
-            {
-                // Превышено доступное количество товара на складе.
-            }
+            catch (ArgumentException) { }
         }
 
         private void Checkout()
@@ -221,11 +193,9 @@ namespace Marketplace_Group_Project.ViewModels
                 _marketplaceService.ClearCart(_currentUser.Id);
                 LoadCart();
                 LoadOrders();
+                OnPropertyChanged(nameof(HasOrders));
             }
-            catch (ArgumentOutOfRangeException)
-            {
-                // Недостаточно товара на складе.
-            }
+            catch (ArgumentOutOfRangeException) { }
         }
 
         private void LoadOrders()
@@ -234,14 +204,36 @@ namespace Marketplace_Group_Project.ViewModels
             var orders = _marketplaceService.GetUserOrders(_currentUser.Id);
             foreach (var order in orders)
             {
-                UserOrders.Add(order);
+                string summary = BuildOrderSummary(order.Id);
+                UserOrders.Add(new OrderDisplay(order, summary));
             }
             OnPropertyChanged(nameof(HasOrders));
         }
 
-        private void Logout()
+        /// <summary>
+        /// Собирает строку со всеми товарами заказа: "Товар 1 ×2, Товар 2, Товар 3".
+        /// </summary>
+        private string BuildOrderSummary(int orderId)
         {
-            _navigationService.Logout();
+            var items = _marketplaceService.GetOrderItems(orderId)
+                .Where(i => i.Quantity > 0)
+                .ToList();
+
+            if (items.Count == 0) return "(нет данных)";
+
+            var names = new List<string>();
+            foreach (var item in items)
+            {
+                var product = _marketplaceService.GetProductById(item.ProductId);
+                string name = product?.Name ?? $"Товар #{item.ProductId}";
+                if (item.Quantity > 1)
+                    name += $" ×{item.Quantity}";
+                names.Add(name);
+            }
+
+            return string.Join(", ", names);
         }
+
+        private void Logout() => _navigationService.Logout();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Marketplace_Group_Project.Models;
 using Marketplace_Group_Project.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -8,10 +9,6 @@ using System.Windows.Input;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    /// <summary>
-    /// ViewModel панели продавца.
-    /// Продавец видит и редактирует только свои товары.
-    /// </summary>
     public class AdminMainViewModel : ViewModelBase
     {
         private readonly MarketplaceService _marketplaceService;
@@ -32,7 +29,7 @@ namespace Marketplace_Group_Project.ViewModels
         private string _newCharacteristicValue = string.Empty;
         private UnitEnum _newCharacteristicUnit = UnitEnum.None;
 
-        private Order? _selectedOrder;
+        private OrderDisplay? _selectedOrder;
         private StatusEnum _selectedStatus;
 
         public AdminMainViewModel(MarketplaceService marketplaceService,
@@ -44,16 +41,15 @@ namespace Marketplace_Group_Project.ViewModels
             _currentUser = currentUser;
 
             Products = new ObservableCollection<Product>();
-            Orders = new ObservableCollection<Order>();
+            Orders = new ObservableCollection<OrderDisplay>();
             Statuses = new ObservableCollection<StatusEnum>();
             Categories = new ObservableCollection<CategoryEnum>();
             Units = new ObservableCollection<UnitEnum>();
             Characteristics = new ObservableCollection<ProductCharacteristic>();
 
-            foreach (StatusEnum status in Enum.GetValues(typeof(StatusEnum)))
-                Statuses.Add(status);
-            //Удаление статуса "Создан"
-            Statuses.Remove(StatusEnum.Created);
+            Statuses.Add(StatusEnum.InProgress);
+            Statuses.Add(StatusEnum.Postponed);
+            Statuses.Add(StatusEnum.Done);
 
             foreach (CategoryEnum category in Enum.GetValues(typeof(CategoryEnum)))
                 Categories.Add(category);
@@ -67,17 +63,13 @@ namespace Marketplace_Group_Project.ViewModels
                 _ => DeactivateProduct(),
                 _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
 
-            AddProductCommand = new RelayCommand(
-                _ => AddProduct(),
-                _ => CanAddProduct());
+            AddProductCommand = new RelayCommand(_ => AddProduct(), _ => CanAddProduct());
 
             StartEditProductCommand = new RelayCommand(
                 _ => StartEditProduct(),
                 _ => SelectedProduct != null && SelectedProduct.SellerId == _currentUser.Id);
 
-            SaveProductCommand = new RelayCommand(
-                _ => SaveProduct(),
-                _ => EditingProduct != null);
+            SaveProductCommand = new RelayCommand(_ => SaveProduct(), _ => EditingProduct != null);
 
             CancelEditCommand = new RelayCommand(_ => CancelEdit());
 
@@ -93,7 +85,7 @@ namespace Marketplace_Group_Project.ViewModels
 
             ChangeOrderStatusCommand = new RelayCommand(
                 _ => ChangeOrderStatus(),
-                _ => SelectedOrder != null);
+                _ => SelectedOrder != null && SelectedOrder.Status != StatusEnum.Done);
 
             LogoutCommand = new RelayCommand(_ => Logout());
 
@@ -102,7 +94,7 @@ namespace Marketplace_Group_Project.ViewModels
         }
 
         public ObservableCollection<Product> Products { get; }
-        public ObservableCollection<Order> Orders { get; }
+        public ObservableCollection<OrderDisplay> Orders { get; }
         public ObservableCollection<StatusEnum> Statuses { get; }
         public ObservableCollection<CategoryEnum> Categories { get; }
         public ObservableCollection<UnitEnum> Units { get; }
@@ -123,77 +115,20 @@ namespace Marketplace_Group_Project.ViewModels
             }
         }
 
-        public Product? EditingProduct
-        {
-            get => _editingProduct;
-            set => SetProperty(ref _editingProduct, value);
-        }
+        public Product? EditingProduct { get => _editingProduct; set => SetProperty(ref _editingProduct, value); }
+        public string NewProductName { get => _newProductName; set => SetProperty(ref _newProductName, value); }
+        public string NewProductDescription { get => _newProductDescription; set => SetProperty(ref _newProductDescription, value); }
+        public decimal NewProductPrice { get => _newProductPrice; set => SetProperty(ref _newProductPrice, value); }
+        public int NewProductStockQuantity { get => _newProductStockQuantity; set => SetProperty(ref _newProductStockQuantity, value); }
+        public CategoryEnum NewProductCategory { get => _newProductCategory; set => SetProperty(ref _newProductCategory, value); }
 
-        public string NewProductName
-        {
-            get => _newProductName;
-            set => SetProperty(ref _newProductName, value);
-        }
+        public ProductCharacteristic? SelectedCharacteristic { get => _selectedCharacteristic; set => SetProperty(ref _selectedCharacteristic, value); }
+        public string NewCharacteristicName { get => _newCharacteristicName; set => SetProperty(ref _newCharacteristicName, value); }
+        public string NewCharacteristicValue { get => _newCharacteristicValue; set => SetProperty(ref _newCharacteristicValue, value); }
+        public UnitEnum NewCharacteristicUnit { get => _newCharacteristicUnit; set => SetProperty(ref _newCharacteristicUnit, value); }
 
-        public string NewProductDescription
-        {
-            get => _newProductDescription;
-            set => SetProperty(ref _newProductDescription, value);
-        }
-
-        public decimal NewProductPrice
-        {
-            get => _newProductPrice;
-            set => SetProperty(ref _newProductPrice, value);
-        }
-
-        public int NewProductStockQuantity
-        {
-            get => _newProductStockQuantity;
-            set => SetProperty(ref _newProductStockQuantity, value);
-        }
-
-        public CategoryEnum NewProductCategory
-        {
-            get => _newProductCategory;
-            set => SetProperty(ref _newProductCategory, value);
-        }
-
-        public ProductCharacteristic? SelectedCharacteristic
-        {
-            get => _selectedCharacteristic;
-            set => SetProperty(ref _selectedCharacteristic, value);
-        }
-
-        public string NewCharacteristicName
-        {
-            get => _newCharacteristicName;
-            set => SetProperty(ref _newCharacteristicName, value);
-        }
-
-        public string NewCharacteristicValue
-        {
-            get => _newCharacteristicValue;
-            set => SetProperty(ref _newCharacteristicValue, value);
-        }
-
-        public UnitEnum NewCharacteristicUnit
-        {
-            get => _newCharacteristicUnit;
-            set => SetProperty(ref _newCharacteristicUnit, value);
-        }
-
-        public Order? SelectedOrder
-        {
-            get => _selectedOrder;
-            set => SetProperty(ref _selectedOrder, value);
-        }
-
-        public StatusEnum SelectedStatus
-        {
-            get => _selectedStatus;
-            set => SetProperty(ref _selectedStatus, value);
-        }
+        public OrderDisplay? SelectedOrder { get => _selectedOrder; set => SetProperty(ref _selectedOrder, value); }
+        public StatusEnum SelectedStatus { get => _selectedStatus; set => SetProperty(ref _selectedStatus, value); }
 
         public ICommand RefreshProductsCommand { get; }
         public ICommand DeactivateProductCommand { get; }
@@ -215,12 +150,10 @@ namespace Marketplace_Group_Project.ViewModels
                 Products.Add(product);
         }
 
-        private bool CanAddProduct()
-        {
-            return !string.IsNullOrWhiteSpace(NewProductName)
-                && NewProductPrice > 0
-                && NewProductStockQuantity >= 0;
-        }
+        private bool CanAddProduct() =>
+            !string.IsNullOrWhiteSpace(NewProductName)
+            && NewProductPrice > 0
+            && NewProductStockQuantity >= 0;
 
         private void AddProduct()
         {
@@ -240,7 +173,6 @@ namespace Marketplace_Group_Project.ViewModels
             {
                 _marketplaceService.AddProduct(product);
                 LoadProducts();
-
                 NewProductName = string.Empty;
                 NewProductDescription = string.Empty;
                 NewProductPrice = 0;
@@ -255,11 +187,8 @@ namespace Marketplace_Group_Project.ViewModels
 
         private void StartEditProduct()
         {
-            if (SelectedProduct == null)
-                return;
-
-            if (SelectedProduct.SellerId != _currentUser.Id)
-                return;
+            if (SelectedProduct == null) return;
+            if (SelectedProduct.SellerId != _currentUser.Id) return;
 
             EditingProduct = new Product
             {
@@ -278,11 +207,8 @@ namespace Marketplace_Group_Project.ViewModels
 
         private void SaveProduct()
         {
-            if (EditingProduct == null)
-                return;
-
-            if (EditingProduct.SellerId != _currentUser.Id)
-                return;
+            if (EditingProduct == null) return;
+            if (EditingProduct.SellerId != _currentUser.Id) return;
 
             try
             {
@@ -297,18 +223,12 @@ namespace Marketplace_Group_Project.ViewModels
             }
         }
 
-        private void CancelEdit()
-        {
-            EditingProduct = null;
-        }
+        private void CancelEdit() => EditingProduct = null;
 
         private void DeactivateProduct()
         {
-            if (SelectedProduct == null)
-                return;
-
-            if (SelectedProduct.SellerId != _currentUser.Id)
-                return;
+            if (SelectedProduct == null) return;
+            if (SelectedProduct.SellerId != _currentUser.Id) return;
 
             _marketplaceService.DeactivateProduct(SelectedProduct.Id);
             LoadProducts();
@@ -317,29 +237,23 @@ namespace Marketplace_Group_Project.ViewModels
         private void LoadCharacteristics()
         {
             Characteristics.Clear();
-            if (SelectedProduct == null)
-                return;
+            if (SelectedProduct == null) return;
 
             var characteristics = _marketplaceService.GetProductCharacteristics(SelectedProduct.Id);
             foreach (var characteristic in characteristics)
                 Characteristics.Add(characteristic);
         }
 
-        private bool CanAddCharacteristic()
-        {
-            return SelectedProduct != null
-                && SelectedProduct.SellerId == _currentUser.Id
-                && !string.IsNullOrWhiteSpace(NewCharacteristicName)
-                && !string.IsNullOrWhiteSpace(NewCharacteristicValue);
-        }
+        private bool CanAddCharacteristic() =>
+            SelectedProduct != null
+            && SelectedProduct.SellerId == _currentUser.Id
+            && !string.IsNullOrWhiteSpace(NewCharacteristicName)
+            && !string.IsNullOrWhiteSpace(NewCharacteristicValue);
 
         private void AddCharacteristic()
         {
-            if (SelectedProduct == null)
-                return;
-
-            if (SelectedProduct.SellerId != _currentUser.Id)
-                return;
+            if (SelectedProduct == null) return;
+            if (SelectedProduct.SellerId != _currentUser.Id) return;
 
             var characteristic = new ProductCharacteristic
             {
@@ -353,7 +267,6 @@ namespace Marketplace_Group_Project.ViewModels
             {
                 _marketplaceService.AddCharacteristic(characteristic);
                 LoadCharacteristics();
-
                 NewCharacteristicName = string.Empty;
                 NewCharacteristicValue = string.Empty;
                 NewCharacteristicUnit = UnitEnum.None;
@@ -367,11 +280,8 @@ namespace Marketplace_Group_Project.ViewModels
 
         private void DeleteCharacteristic()
         {
-            if (SelectedCharacteristic == null)
-                return;
-
-            if (SelectedProduct == null || SelectedProduct.SellerId != _currentUser.Id)
-                return;
+            if (SelectedCharacteristic == null) return;
+            if (SelectedProduct == null || SelectedProduct.SellerId != _currentUser.Id) return;
 
             _marketplaceService.DeleteCharachteristic(SelectedCharacteristic.Id);
             LoadCharacteristics();
@@ -382,38 +292,45 @@ namespace Marketplace_Group_Project.ViewModels
             Orders.Clear();
             var orders = _marketplaceService.GetAllOrders();
             foreach (var order in orders)
-                Orders.Add(order);
+            {
+                string summary = BuildOrderSummary(order.Id);
+                Orders.Add(new OrderDisplay(order, summary));
+            }
+        }
+
+        /// <summary>
+        /// Собирает строку со всеми товарами заказа: "Товар 1 ×2, Товар 2, Товар 3".
+        /// </summary>
+        private string BuildOrderSummary(int orderId)
+        {
+            var items = _marketplaceService.GetOrderItems(orderId)
+                .Where(i => i.Quantity > 0)
+                .ToList();
+
+            if (items.Count == 0) return "(нет данных)";
+
+            var names = new List<string>();
+            foreach (var item in items)
+            {
+                var product = _marketplaceService.GetProductById(item.ProductId);
+                string name = product?.Name ?? $"Товар #{item.ProductId}";
+                if (item.Quantity > 1)
+                    name += $" ×{item.Quantity}";
+                names.Add(name);
+            }
+
+            return string.Join(", ", names);
         }
 
         private void ChangeOrderStatus()
         {
-            if (SelectedOrder == null)
-                return;
+            if (SelectedOrder == null) return;
+            if (SelectedOrder.Status == StatusEnum.Done) return;
 
-            if (SelectedOrder.Status == StatusEnum.Done || SelectedOrder.Status == StatusEnum.Canceled)
-            {
-				MessageBox.Show($"Нельзя изменить статус выбранного заказа",
-								"Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-				return;
-            }
-
-            if(SelectedStatus == StatusEnum.Canceled)
-            {
-                if(!_marketplaceService.CancelOrder(SelectedOrder.Id))
-                {
-					MessageBox.Show($"Не удалось отменить заказ: Непредвиденная ошибка",
-								"Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-				}
-            }
-
-			_marketplaceService.ChangeOrderStatus(SelectedOrder, SelectedStatus);
+            _marketplaceService.ChangeOrderStatus(SelectedOrder.Order, SelectedStatus);
             LoadOrders();
         }
 
-        private void Logout()
-        {
-            _navigationService.Logout();
-        }
+        private void Logout() => _navigationService.Logout();
     }
 }
