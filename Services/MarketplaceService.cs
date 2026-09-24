@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Windows.Controls;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Marketplace_Group_Project.Services
@@ -273,6 +274,31 @@ namespace Marketplace_Group_Project.Services
 				return Enumerable.Empty<OrderItem>();
 			}
 		}
+
+		public bool CancelOrder(int orderId)
+		{
+			try
+			{
+				Order orderToCancel = context.Orders.Include(o => o.OrderItems).First(o => o.Id == orderId);
+				
+				var products = context.Products
+				.Where(p => orderToCancel.OrderItems.Select(i => i.ProductId).Contains(p.Id))
+				.ToDictionary(p => p.Id);
+
+				foreach (var orderItem in orderToCancel.OrderItems)
+				{
+					products[orderItem.ProductId].StockQuantity += orderItem.Quantity;
+				}
+				orderToCancel.Status = StatusEnum.Canceled;
+				context.SaveChanges();
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
 
 		public bool CheckStock(int productId, int currentQuantity)
 		{

@@ -1,16 +1,17 @@
 ﻿using Marketplace_Group_Project.Models;
 using Marketplace_Group_Project.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
 namespace Marketplace_Group_Project.ViewModels
 {
-    
+
     /// ViewModel главного окна покупателя.
     /// Отвечает за отображение товаров, корзины и заказов пользователя.
-    
+
     public class UserMainViewModel : ViewModelBase
     {
         private readonly MarketplaceService _marketplaceService;
@@ -33,7 +34,7 @@ namespace Marketplace_Group_Project.ViewModels
             FilteredProducts = new ObservableCollection<Product>();
             Categories = new ObservableCollection<CategoryEnum>();
             CartItems = new ObservableCollection<CartItem>();
-            UserOrders = new ObservableCollection<Order>();
+            UserOrders = new ObservableCollection<OrderDisplay>();
 
             foreach (CategoryEnum category in Enum.GetValues(typeof(CategoryEnum)))
             {
@@ -60,7 +61,7 @@ namespace Marketplace_Group_Project.ViewModels
         public ObservableCollection<Product> FilteredProducts { get; }
         public ObservableCollection<CategoryEnum> Categories { get; }
         public ObservableCollection<CartItem> CartItems { get; }
-        public ObservableCollection<Order> UserOrders { get; }
+        public ObservableCollection<OrderDisplay> UserOrders { get; }
 
         public string CurrentUserName => _currentUser.Login;
 
@@ -166,37 +167,34 @@ namespace Marketplace_Group_Project.ViewModels
                 Quantity = 1
             };
 
-            _marketplaceService.AddToCart(cartItem);
-            LoadCart();
+            try
+            {
+                _marketplaceService.AddToCart(cartItem);
+                LoadCart();
+            }
+            catch (ArgumentException) { }
         }
 
         private void RemoveFromCart(CartItem? item)
         {
-            if (item == null)
-                return;
-
+            if (item == null) return;
             _marketplaceService.RemoveFromCart(item.Id);
             LoadCart();
         }
 
         private void ChangeQuantity(CartItem? item, int delta)
         {
-            if (item == null)
-                return;
+            if (item == null) return;
 
             int newQuantity = item.Quantity + delta;
-            if (newQuantity < 1)
-                return;
+            if (newQuantity < 1) return;
 
             try
             {
                 _marketplaceService.ChangeCartItemQauntity(item.Id, newQuantity);
                 LoadCart();
             }
-            catch (ArgumentException)
-            {
-                // Превышено доступное количество товара на складе.
-            }
+            catch (ArgumentException) { }
         }
 
         private void Checkout()
@@ -221,6 +219,7 @@ namespace Marketplace_Group_Project.ViewModels
                 _marketplaceService.ClearCart(_currentUser.Id);
                 LoadCart();
                 LoadOrders();
+                LoadProducts();
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -234,14 +233,36 @@ namespace Marketplace_Group_Project.ViewModels
             var orders = _marketplaceService.GetUserOrders(_currentUser.Id);
             foreach (var order in orders)
             {
-                UserOrders.Add(order);
+                string summary = BuildOrderSummary(order.Id);
+                UserOrders.Add(new OrderDisplay(order, summary));
             }
             OnPropertyChanged(nameof(HasOrders));
         }
 
-        private void Logout()
+        /// <summary>
+        /// Собирает строку со всеми товарами заказа: "Товар 1 ×2, Товар 2, Товар 3".
+        /// </summary>
+        private string BuildOrderSummary(int orderId)
         {
-            _navigationService.Logout();
+            var items = _marketplaceService.GetOrderItems(orderId)
+                .Where(i => i.Quantity > 0)
+                .ToList();
+
+            if (items.Count == 0) return "(нет данных)";
+
+            var names = new List<string>();
+            foreach (var item in items)
+            {
+                var product = _marketplaceService.GetProductById(item.ProductId);
+                string name = product?.Name ?? $"Товар #{item.ProductId}";
+                if (item.Quantity > 1)
+                    name += $" ×{item.Quantity}";
+                names.Add(name);
+            }
+
+            return string.Join(", ", names);
         }
+
+        private void Logout() => _navigationService.Logout();
     }
 }

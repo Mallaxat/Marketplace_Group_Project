@@ -21,7 +21,7 @@ namespace Marketplace_Group_Project.Views
     public partial class AuthWindow : Window
     {
         private AuthViewModel _viewModel;
-
+        private bool check=false;
         public AuthWindow()
         {
             InitializeComponent();
@@ -39,6 +39,12 @@ namespace Marketplace_Group_Project.Views
 				);
 
             _viewModel = new AuthViewModel(authService, naviService, networkService);
+
+            _viewModel.RegistrationCompleted += () =>
+            {
+                ClearForm();
+            };
+
             DataContext = _viewModel;
         }
 
@@ -51,5 +57,19 @@ namespace Marketplace_Group_Project.Views
         {
             _viewModel.RepeatPassword = RepeatPwdBox.Password;
         }
-    }
+
+        private void ClearForm()
+        {
+            txt_login.Clear();
+            txt_email.Clear();
+            txt_code.Clear();
+            PwdBox.Clear();
+            RepeatPwdBox.Clear();
+        }
+
+		private void Hyperlink_Click(object sender, RoutedEventArgs e)
+		{
+            ClearForm();
+		}
+	}
 }
