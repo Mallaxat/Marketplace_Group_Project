@@ -193,7 +193,11 @@ namespace Marketplace_Group_Project.ViewModels
                 _marketplaceService.ClearCart(_currentUser.Id);
                 LoadCart();
                 LoadOrders();
-                OnPropertyChanged(nameof(HasOrders));
+                LoadProducts();
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Недостаточно товара на складе.
             }
             catch (ArgumentOutOfRangeException) { }
         }
