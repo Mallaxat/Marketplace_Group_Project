@@ -66,20 +66,22 @@
                             Style="{StaticResource BaseButton}"
                             Command="{Binding RefreshProductsCommand}" />
 
-                    <DataGrid Grid.Row="1"
+					<DataGrid Grid.Row="1"
+							  Name="dtg_products"
                               ItemsSource="{Binding Products}"
                               SelectedItem="{Binding SelectedProduct}"
                               AutoGenerateColumns="False"
-                              IsReadOnly="True"
+                              IsReadOnly="False"
+							  CurrentCellChanged="dtg_products_CurrentCellChanged"
                               SelectionMode="Single"
 							  BorderThickness="0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="2*" />
-                            <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="3*" />
-							<DataGridTextColumn Header="Категория" Binding="{Binding Category, Converter={StaticResource enumConverter}}" Width="1*" />
-                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat='{}{0:C}'}" Width="1*" />
-                            <DataGridTextColumn Header="На складе" Binding="{Binding StockQuantity}" Width="1*" />
-                            <DataGridCheckBoxColumn Header="Активен" Binding="{Binding IsActive}" Width="1*" />
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}" IsReadOnly="True" Width="2*" />
+							<DataGridTextColumn Header="Описание" Binding="{Binding Description}" IsReadOnly="True" Width="3*" />
+							<DataGridTextColumn Header="Категория" Binding="{Binding Category, Converter={StaticResource enumConverter}}" IsReadOnly="True" Width="1*" />
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, Mode=TwoWay, StringFormat='{}{0:C}'}" Width="1*" />
+							<DataGridTextColumn Header="На складе" Binding="{Binding StockQuantity, Mode=TwoWay}" Width="1*" />
+							<DataGridCheckBoxColumn Header="Активен" Binding="{Binding IsActive}" IsReadOnly="True" Width="1*" />
                         </DataGrid.Columns>
                     </DataGrid>
 

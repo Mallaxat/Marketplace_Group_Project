@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Marketplace_Group_Project.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -20,6 +21,15 @@ namespace Marketplace_Group_Project.Views
         public AdminMainWindow()
         {
             InitializeComponent();
-        }
-    }
+		}
+
+		private void dtg_products_CurrentCellChanged(object sender, EventArgs e)
+		{
+			if (this.DataContext != null)
+			{
+				AdminMainViewModel vm = (DataContext as AdminMainViewModel);
+				vm.SaveProductCommand.Execute(null);
+			}
+		}
+	}
 }

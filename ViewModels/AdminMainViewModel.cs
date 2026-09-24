@@ -207,8 +207,11 @@ namespace Marketplace_Group_Project.ViewModels
 
         private void SaveProduct()
         {
-            if (EditingProduct == null) return;
-            if (EditingProduct.SellerId != _currentUser.Id) return;
+            //EditingProduct беру из SelectedProduct, т.к. таблица одна
+            EditingProduct = SelectedProduct;
+
+			if (EditingProduct == null)
+                return;
 
             try
             {
